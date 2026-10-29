@@ -1,0 +1,78 @@
+<!-- Dải nhỏ phía trên header dành cho thông điệp ngắn hoặc liên kết nổi bật. -->
+@{
+    // Đọc tên đã lưu khi đăng nhập để header có thể thay nhãn tài khoản.
+    var signedInUserName = Session["GearHubUser"] as string;
+    var accountLink = string.IsNullOrWhiteSpace(signedInUserName)
+        ? Url.Action("Login", "Account")
+        : Url.Action("OrderHistory", "Account");
+    var accountText = string.IsNullOrWhiteSpace(signedInUserName) ? "Tài khoản" : signedInUserName;
+    var accountTitle = string.IsNullOrWhiteSpace(signedInUserName) ? "Đăng nhập hoặc tạo tài khoản" : "Tài khoản của " + signedInUserName;
+}
+<div class="top-strip">
+    <div class="site-container top-strip-inner">
+        <span>GearHub <span class="top-strip-dot">/</span> Góc công nghệ dành cho người mê hiệu năng</span>
+        <a href="#danh-muc">Khám phá danh mục <span aria-hidden="true">↗</span></a>
+    </div>
+</div>
+
+<header class="site-header">
+    <div class="site-container header-main">
+        <!-- Ký hiệu GH là viết tắt của GearHub; có thể thay bằng logo ảnh khi nhóm chốt mẫu. -->
+        <a class="brand" href="@Url.Action("Index", "Home")" aria-label="GearHub - Trang chủ">
+            <span class="brand-mark" aria-hidden="true">GH</span>
+            <span class="brand-name">GEAR<span>HUB</span><small>TECH FOR PLAY</small></span>
+        </a>
+
+        <!-- Ô tìm kiếm được giữ trong header; nút sẽ được nối với trang tìm kiếm sau. -->
+        <form class="site-search" role="search">
+            <label class="visually-hidden" for="gearhub-search">Tìm kiếm sản phẩm</label>
+            <input id="gearhub-search" type="search" placeholder="Bạn đang tìm thiết bị nào?" />
+            <button type="button" aria-label="Tìm kiếm" disabled>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="10.8" cy="10.8" r="6.8"></circle>
+                    <path d="m16 16 5 5"></path>
+                </svg>
+            </button>
+        </form>
+
+        <!-- Các lối tắt nằm cùng hàng với ô tìm kiếm; bỏ disabled khi đã có trang tương ứng. -->
+        <div class="header-actions" aria-label="Lối tắt">
+            <a class="header-action" href="@accountLink" title="@accountTitle">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="8" r="3.5"></circle>
+                    <path d="M4.5 20c.7-3.6 3.4-5.5 7.5-5.5s6.8 1.9 7.5 5.5"></path>
+                </svg>
+                <span>@accountText</span>
+            </a>
+            <a class="header-action" href="@Url.Action("Index", "Cart")" title="Mở giỏ hàng">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3.5 4h2l2.1 11.1a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 1.9-1.5L22 8H7"></path>
+                    <circle cx="10" cy="20" r="1"></circle>
+                    <circle cx="18" cy="20" r="1"></circle>
+                </svg>
+                <span>Giỏ hàng</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Các liên kết trong menu trỏ tới section cùng tên ở trang chủ. -->
+    <nav class="main-nav" aria-label="Điều hướng chính">
+        <div class="site-container">
+            <button class="menu-toggle collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gearhub-menu" aria-expanded="false" aria-controls="gearhub-menu">
+                <span class="menu-toggle-icon" aria-hidden="true">☰</span>
+                <span>Danh mục</span>
+            </button>
+            <div class="collapse site-menu" id="gearhub-menu">
+                <ul class="site-nav">
+                    <li><a class="is-current" href="@Url.Action("Index", "Home")">Trang chủ</a></li>
+                    <li><a href="@Url.Action("Category", "Product", new { category = "pc-linh-kien" })">PC &amp; linh kiện</a></li>
+                    <li><a href="@Url.Action("Category", "Product", new { category = "laptop" })">Laptop</a></li>
+                    <li><a href="@Url.Action("Category", "Product", new { category = "gaming-gear" })">Gaming Gear</a></li>
+                    <li><a href="@Url.Action("Index", "BuildPC")">Build PC</a></li>
+                    <li><a href="@Url.Action("Index", "Article")">Tin công nghệ</a></li>
+                    <li><a href="@Url.Action("Category", "Product", new { category = "console" })">Máy Game Console</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

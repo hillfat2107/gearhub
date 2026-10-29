@@ -1,0 +1,162 @@
+@model GearHub.Models.Entities.AdminProduct
+@{
+    ViewBag.Title = Model.Name;
+    var imagePaths = (System.Collections.Generic.List<string>)ViewBag.ProductImages;
+    var specificationRows = (System.Collections.Generic.List<GearHub.Models.Entities.ProductSpec>)ViewBag.ProductSpecifications;
+}
+
+<main class="product-detail-page">
+    <div class="site-container">
+        <!-- Đường dẫn nhỏ giúp người mua quay lại đúng danh mục của sản phẩm. -->
+        <nav class="category-breadcrumb" aria-label="Đường dẫn trang">
+            <a href="@Url.Action("Index", "Home")">Trang chủ</a>
+            <span aria-hidden="true">/</span>
+            <a href="@Url.Action("Category", "Product", new { category = Model.CategoryKey })">@Model.CategoryName</a>
+            <span aria-hidden="true">/</span>
+            <span aria-current="page">@Model.Name</span>
+        </nav>
+
+        <section class="product-detail-card">
+            <div class="product-gallery" data-product-gallery>
+                <div class="product-gallery-stage">
+                    <img class="product-gallery-main-image" data-gallery-main src="@Url.Content(imagePaths[0])" alt="@Model.Name" />
+                    @if (imagePaths.Count > 1)
+                    {
+                        <button class="product-gallery-arrow product-gallery-previous" type="button" data-gallery-previous aria-label="Xem ảnh trước">&#8249;</button>
+                        <button class="product-gallery-arrow product-gallery-next" type="button" data-gallery-next aria-label="Xem ảnh tiếp theo">&#8250;</button>
+                    }
+                    <span class="product-gallery-counter" data-gallery-counter>1 / @imagePaths.Count</span>
+                </div>
+
+                @if (imagePaths.Count > 1)
+                {
+                    <div class="product-gallery-thumbnails" aria-label="Các ảnh sản phẩm">
+                        @for (var index = 0; index < imagePaths.Count; index++)
+                        {
+                            <button class="product-gallery-thumbnail @(index == 0 ? "is-active" : "")" type="button"
+                                    data-gallery-index="@index" data-gallery-src="@Url.Content(imagePaths[index])" aria-pressed="@(index == 0 ? "true" : "false")"
+                                    aria-label="Xem ảnh @(index + 1)">
+                                <img src="@Url.Content(imagePaths[index])" alt="@Model.Name - ảnh @(index + 1)" />
+                            </button>
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="product-detail-info">
+                <p class="eyebrow">@Model.CategoryName / GEARHUB</p>
+                <h1>@Model.Name</h1>
+                <strong class="product-detail-price">@Model.Price.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))đ</strong>
+
+                <!-- Phần giới thiệu ngắn được lấy nguyên từ nội dung quản trị viên đã nhập. -->
+                <section class="product-detail-section">
+                    <h2>Mô tả sản phẩm</h2>
+                    <p>@Model.Description</p>
+                </section>
+
+                <!-- Mã sản phẩm và số lượng được gửi tới giỏ; giá vẫn lấy lại từ dữ liệu trên máy chủ. -->
+                @using (Html.BeginForm("Add", "Cart", FormMethod.Post, new { @class = "product-detail-cart-form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("productId", Model.Id)
+                    <label for="quantity">Số lượng</label>
+                    <input id="quantity" name="quantity" type="number" min="1" max="99" value="1" />
+                    <button class="button button-primary" type="submit">Thêm vào giỏ hàng</button>
+                }
+            </div>
+        </section>
+
+        <!-- Cấu hình hiển thị thành bảng để người mua đọc nhanh giống trang tham khảo. -->
+        <section class="product-specification-card">
+            <h2>Thông tin sản phẩm</h2>
+            <details class="product-specification-details" open>
+                <summary>Mục lục</summary>
+                <div class="product-specification-content">
+                    <strong>Thông số kỹ thuật:</strong>
+                    @if (specificationRows != null && specificationRows.Count > 0)
+                    {
+                        <div class="product-specification-table-wrap">
+                            <table class="product-specification-table">
+                                <tbody>
+                                    @foreach (var row in specificationRows)
+                                    {
+                                        <tr>
+                                            <th scope="row">@row.Name</th>
+                                            <td>@row.Value</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="product-specification-empty">Chưa có thông tin cấu hình cho sản phẩm này.</p>
+                    }
+                    <p class="product-specification-note">*Hình ảnh minh họa có thể khác với cấu hình thực tế.</p>
+                </div>
+            </details>
+            <div class="product-specification-actions">
+                <button class="button button-outline" type="button" data-toggle-specifications>Thu gọn <span aria-hidden="true">⌃</span></button>
+            </div>
+        </section>
+    </div>
+</main>
+
+@section scripts {
+    <script>
+        (function () {
+            var galleries = document.querySelectorAll("[data-product-gallery]");
+
+            Array.prototype.forEach.call(galleries, function (gallery) {
+                var mainImage = gallery.querySelector("[data-gallery-main]");
+                var counter = gallery.querySelector("[data-gallery-counter]");
+                var thumbnails = Array.prototype.slice.call(gallery.querySelectorAll("[data-gallery-index]"));
+
+                if (thumbnails.length === 0) {
+                    return;
+                }
+
+                var currentIndex = 0;
+                var showImage = function (index) {
+                    currentIndex = (index + thumbnails.length) % thumbnails.length;
+                    var selected = thumbnails[currentIndex];
+                    mainImage.src = selected.getAttribute("data-gallery-src");
+                    mainImage.alt = selected.querySelector("img").alt;
+                    counter.textContent = (currentIndex + 1) + " / " + thumbnails.length;
+
+                    thumbnails.forEach(function (thumbnail, thumbnailIndex) {
+                        var isActive = thumbnailIndex === currentIndex;
+                        thumbnail.classList.toggle("is-active", isActive);
+                        thumbnail.setAttribute("aria-pressed", isActive ? "true" : "false");
+                    });
+                };
+
+                thumbnails.forEach(function (thumbnail, index) {
+                    thumbnail.addEventListener("click", function () {
+                        showImage(index);
+                    });
+                });
+
+                gallery.querySelector("[data-gallery-previous]").addEventListener("click", function () {
+                    showImage(currentIndex - 1);
+                });
+                gallery.querySelector("[data-gallery-next]").addEventListener("click", function () {
+                    showImage(currentIndex + 1);
+                });
+            });
+
+            // Nút phía cuối bảng mở hoặc thu gọn phần thông số kỹ thuật.
+            var specificationDetails = document.querySelector(".product-specification-details");
+            var specificationToggle = document.querySelector("[data-toggle-specifications]");
+            if (specificationDetails && specificationToggle) {
+                specificationToggle.addEventListener("click", function () {
+                    specificationDetails.open = !specificationDetails.open;
+                    specificationToggle.innerHTML = specificationDetails.open
+                        ? "Thu gọn <span aria-hidden=\"true\">⌃</span>"
+                        : "Xem cấu hình <span aria-hidden=\"true\">⌄</span>";
+                });
+            }
+        })();
+    </script>
+}

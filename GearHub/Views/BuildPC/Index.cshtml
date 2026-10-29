@@ -1,0 +1,197 @@
+@{
+    ViewBag.Title = "Build PC";
+}
+
+<main class="build-page">
+    <div class="site-container">
+        <nav class="category-breadcrumb" aria-label="Đường dẫn trang">
+            <a href="@Url.Action("Index", "Home")">Trang chủ</a>
+            <span aria-hidden="true">/</span>
+            <span aria-current="page">Build PC</span>
+        </nav>
+
+        <header class="build-page-heading">
+            <p class="account-kicker">GEARHUB / TÙY CHỈNH CẤU HÌNH</p>
+            <h1>Tạo cấu hình PC của bạn</h1>
+            <p>Chọn từng bộ phận để hình dung cấu hình mong muốn. Danh sách linh kiện sẽ được nhóm bổ sung sau.</p>
+        </header>
+
+        <section class="build-budget-panel" aria-label="Gợi ý linh kiện theo ngân sách">
+            <div class="build-budget-intro">
+                <h2>Gợi ý bộ linh kiện theo ngân sách</h2>
+                <p>Nhập số tiền bạn dự định chi để xem cách chia ngân sách tham khảo cho từng hạng mục.</p>
+            </div>
+            <div class="build-budget-controls">
+                <label for="build-budget">Ngân sách của bạn</label>
+                <div class="build-budget-entry">
+                    <input id="build-budget" type="number" min="5000000" step="1000000" placeholder="Ví dụ: 20000000" />
+                    <button id="suggest-build" class="button button-primary" type="button">Gợi ý tự động</button>
+                </div>
+                <p id="build-budget-status" role="status" aria-live="polite">Gợi ý chỉ phân bổ ngân sách, chưa chọn sản phẩm cụ thể.</p>
+            </div>
+            <div id="build-suggestion" class="build-suggestion" aria-live="polite">
+                <p>Nhập ngân sách rồi chọn “Gợi ý tự động”.</p>
+            </div>
+        </section>
+
+        <div class="build-page-layout">
+            <section class="build-parts-panel" aria-label="Chọn linh kiện cho máy tính">
+                <div class="build-parts-heading">
+                    <h2>Chọn linh kiện</h2>
+                    <span>8 hạng mục</span>
+                </div>
+
+                <!-- Mỗi danh sách đang để trống để nhóm tự thêm linh kiện sau này. -->
+                <div class="build-part-row">
+                    <label for="build-cpu"><span class="build-part-icon">CPU</span>Bộ xử lý</label>
+                    <select id="build-cpu" name="cpu"><option selected>Chưa có linh kiện để chọn</option></select>
+                </div>
+                <div class="build-part-row">
+                    <label for="build-mainboard"><span class="build-part-icon">MB</span>Mainboard</label>
+                    <select id="build-mainboard" name="mainboard"><option selected>Chưa có linh kiện để chọn</option></select>
+                </div>
+                <div class="build-part-row">
+                    <label for="build-ram"><span class="build-part-icon">RAM</span>Bộ nhớ RAM</label>
+                    <select id="build-ram" name="ram"><option selected>Chưa có linh kiện để chọn</option></select>
+                </div>
+                <div class="build-part-row">
+                    <label for="build-gpu"><span class="build-part-icon">GPU</span>Card đồ họa</label>
+                    <select id="build-gpu" name="gpu"><option selected>Chưa có linh kiện để chọn</option></select>
+                </div>
+                <div class="build-part-row">
+                    <label for="build-storage"><span class="build-part-icon">SSD</span>Lưu trữ</label>
+                    <select id="build-storage" name="storage"><option selected>Chưa có linh kiện để chọn</option></select>
+                </div>
+                <div class="build-part-row">
+                    <label for="build-power"><span class="build-part-icon">PSU</span>Nguồn máy tính</label>
+                    <select id="build-power" name="power"><option selected>Chưa có linh kiện để chọn</option></select>
+                </div>
+                <div class="build-part-row">
+                    <label for="build-case"><span class="build-part-icon">CASE</span>Vỏ case</label>
+                    <select id="build-case" name="case"><option selected>Chưa có linh kiện để chọn</option></select>
+                </div>
+                <div class="build-part-row">
+                    <label for="build-cooling"><span class="build-part-icon">FAN</span>Tản nhiệt</label>
+                    <select id="build-cooling" name="cooling"><option selected>Chưa có linh kiện để chọn</option></select>
+                </div>
+            </section>
+
+            <aside class="build-summary-panel" aria-label="Tóm tắt cấu hình">
+                <h2>Cấu hình của bạn</h2>
+                <div class="build-summary-empty">
+                    <span aria-hidden="true">GH</span>
+                    <p id="build-selection-summary">Bạn chưa chọn linh kiện nào.</p>
+                </div>
+                <div class="build-summary-total">
+                    <span>Ngân sách đã nhập</span>
+                    <strong id="build-total-budget">0₫</strong>
+                </div>
+                <button class="button button-primary build-save-button" type="button" disabled>Lưu cấu hình</button>
+                <p>Sau khi có linh kiện, giá và thông tin tương thích sẽ hiện tại đây.</p>
+            </aside>
+        </div>
+    </div>
+</main>
+@section scripts {
+    <script>
+        // Chia ngân sách rồi chọn mức linh kiện gợi ý cho từng hạng mục.
+        document.getElementById("suggest-build").addEventListener("click", function () {
+            var budgetInput = document.getElementById("build-budget");
+            var budgetStatus = document.getElementById("build-budget-status");
+            var suggestionBox = document.getElementById("build-suggestion");
+            var totalBudget = document.getElementById("build-total-budget");
+            var selectionSummary = document.getElementById("build-selection-summary");
+            var budget = Number(budgetInput.value);
+
+            if (!budgetInput.value || isNaN(budget) || budget < 5000000) {
+                budgetStatus.textContent = "Bạn hãy nhập ngân sách từ 5 triệu đồng trở lên. Gợi ý cũ vẫn được giữ lại.";
+                budgetInput.focus();
+                return;
+            }
+
+            var level;
+            var parts;
+            if (budget < 15000000) {
+                level = "Phổ thông";
+                parts = [
+                    { name: "Bộ xử lý (CPU)", percent: 22, selectId: "build-cpu", choice: "Gợi ý: nhóm phổ thông" },
+                    { name: "Mainboard", percent: 14, selectId: "build-mainboard", choice: "Gợi ý: mainboard phổ thông" },
+                    { name: "RAM", percent: 8, selectId: "build-ram", choice: "Gợi ý: RAM 16 GB" },
+                    { name: "Card đồ họa", percent: 25, selectId: "build-gpu", choice: "Gợi ý: card phổ thông" },
+                    { name: "Ổ lưu trữ", percent: 8, selectId: "build-storage", choice: "Gợi ý: SSD 512 GB" },
+                    { name: "Nguồn máy tính", percent: 10, selectId: "build-power", choice: "Gợi ý: nguồn khoảng 550W" },
+                    { name: "Vỏ case", percent: 7, selectId: "build-case", choice: "Gợi ý: vỏ case phổ thông" },
+                    { name: "Tản nhiệt", percent: 6, selectId: "build-cooling", choice: "Gợi ý: tản nhiệt cơ bản" }
+                ];
+            } else if (budget < 30000000) {
+                level = "Cân bằng";
+                parts = [
+                    { name: "Bộ xử lý (CPU)", percent: 18, selectId: "build-cpu", choice: "Gợi ý: nhóm tầm trung" },
+                    { name: "Mainboard", percent: 12, selectId: "build-mainboard", choice: "Gợi ý: mainboard tầm trung" },
+                    { name: "RAM", percent: 8, selectId: "build-ram", choice: "Gợi ý: RAM 32 GB" },
+                    { name: "Card đồ họa", percent: 38, selectId: "build-gpu", choice: "Gợi ý: card tầm trung" },
+                    { name: "Ổ lưu trữ", percent: 8, selectId: "build-storage", choice: "Gợi ý: SSD 1 TB" },
+                    { name: "Nguồn máy tính", percent: 8, selectId: "build-power", choice: "Gợi ý: nguồn 650–750W" },
+                    { name: "Vỏ case", percent: 5, selectId: "build-case", choice: "Gợi ý: vỏ thoáng khí" },
+                    { name: "Tản nhiệt", percent: 3, selectId: "build-cooling", choice: "Gợi ý: tản khí" }
+                ];
+            } else {
+                level = "Hiệu năng cao";
+                parts = [
+                    { name: "Bộ xử lý (CPU)", percent: 16, selectId: "build-cpu", choice: "Gợi ý: nhóm hiệu năng cao" },
+                    { name: "Mainboard", percent: 12, selectId: "build-mainboard", choice: "Gợi ý: mainboard tương thích cấu hình cao" },
+                    { name: "RAM", percent: 8, selectId: "build-ram", choice: "Gợi ý: RAM 32 GB trở lên" },
+                    { name: "Card đồ họa", percent: 42, selectId: "build-gpu", choice: "Gợi ý: card hiệu năng cao" },
+                    { name: "Ổ lưu trữ", percent: 8, selectId: "build-storage", choice: "Gợi ý: SSD 1 TB trở lên" },
+                    { name: "Nguồn máy tính", percent: 8, selectId: "build-power", choice: "Gợi ý: nguồn công suất cao" },
+                    { name: "Vỏ case", percent: 3, selectId: "build-case", choice: "Gợi ý: vỏ case rộng, thoáng khí" },
+                    { name: "Tản nhiệt", percent: 3, selectId: "build-cooling", choice: "Gợi ý: tản nhiệt hiệu năng cao" }
+                ];
+            }
+
+            var formatPrice = function (amount) {
+                return Math.round(amount).toLocaleString("vi-VN") + "₫";
+            };
+            var title = document.createElement("h3");
+            title.textContent = "Mức gợi ý: " + level;
+            var list = document.createElement("ul");
+            list.className = "build-suggestion-list";
+            var allocated = 0;
+
+            for (var i = 0; i < parts.length; i++) {
+                var amount = i === parts.length - 1
+                    ? budget - allocated
+                    : Math.round(budget * parts[i].percent / 100);
+                allocated += amount;
+
+                var partSelect = document.getElementById(parts[i].selectId);
+                partSelect.textContent = "";
+                var suggestedOption = document.createElement("option");
+                suggestedOption.value = "suggested";
+                suggestedOption.textContent = parts[i].choice;
+                suggestedOption.selected = true;
+                partSelect.appendChild(suggestedOption);
+
+                var row = document.createElement("li");
+                var partName = document.createElement("span");
+                var partPrice = document.createElement("strong");
+                partName.textContent = parts[i].name + " (" + parts[i].percent + "%)";
+                partPrice.textContent = formatPrice(amount);
+                row.appendChild(partName);
+                row.appendChild(partPrice);
+                list.appendChild(row);
+            }
+
+            var note = document.createElement("p");
+            note.textContent = "Đây là mức chia tham khảo, chưa phải tên sản phẩm thật. Nhóm có thể thay gợi ý bằng danh sách linh kiện sau này.";
+            suggestionBox.textContent = "";
+            suggestionBox.appendChild(title);
+            suggestionBox.appendChild(list);
+            suggestionBox.appendChild(note);
+
+            budgetStatus.textContent = "Đã tạo và chọn mức linh kiện gợi ý theo ngân sách.";
+            selectionSummary.textContent = "Đã chọn mức gợi ý; tên sản phẩm thật sẽ hiện khi có dữ liệu.";
+            totalBudget.textContent = formatPrice(budget);
+        });
+    </script>
+}

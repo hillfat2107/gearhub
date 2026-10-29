@@ -1,0 +1,44 @@
+@{
+    ViewBag.Title = "Đặt hàng thành công";
+    var itemTotal = ViewBag.OrderItemTotal == null ? 0m : (decimal)ViewBag.OrderItemTotal;
+    var shippingFee = ViewBag.OrderShippingFee == null ? 0m : (decimal)ViewBag.OrderShippingFee;
+    var orderTotal = ViewBag.OrderTotal == null ? itemTotal + shippingFee : (decimal)ViewBag.OrderTotal;
+}
+
+<main class="cart-page">
+    <div class="site-container">
+        <nav class="category-breadcrumb" aria-label="Đường dẫn trang">
+            <a href="@Url.Action("Index", "Home")">Trang chủ</a>
+            <span aria-hidden="true">/</span>
+            <a href="@Url.Action("Index", "Cart")">Giỏ hàng</a>
+            <span aria-hidden="true">/</span>
+            <span aria-current="page">Hoàn tất</span>
+        </nav>
+
+        <ol class="cart-stepper" aria-label="Các bước mua hàng">
+            <li><span>1</span> Giỏ hàng</li>
+            <li><span>2</span> Giao hàng</li>
+            <li class="is-active"><span>3</span> Hoàn tất</li>
+        </ol>
+
+        <section class="checkout-success-card">
+            <span class="checkout-success-mark" aria-hidden="true">✓</span>
+            <p class="account-kicker">GEARHUB / ĐƠN HÀNG</p>
+            <h1>Đã ghi nhận đơn hàng mẫu</h1>
+            <p class="checkout-success-note">Đây là bước minh họa giao diện; chưa kết nối dịch vụ giao hàng hoặc thanh toán thật.</p>
+
+            <div class="checkout-success-details">
+                <div><span>Mã đơn</span><strong>@ViewBag.OrderNumber</strong></div>
+                <div><span>Người nhận</span><strong>@ViewBag.OrderFullName · @ViewBag.OrderPhone</strong></div>
+                <div><span>Địa chỉ giao hàng</span><strong>@ViewBag.OrderAddress</strong></div>
+                <div><span>Thanh toán</span><strong>@ViewBag.OrderPayment</strong></div>
+                <div><span>Ghi chú</span><strong>@ViewBag.OrderNote</strong></div>
+                <div><span>Tiền hàng</span><strong>@itemTotal.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))đ</strong></div>
+                <div><span>Phí vận chuyển ước tính</span><strong>@shippingFee.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))đ</strong></div>
+                <div><span>Tổng cộng</span><strong class="checkout-success-total">@orderTotal.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))đ</strong></div>
+            </div>
+
+            <a class="button button-primary" href="@Url.Action("Index", "Home")">Về trang chủ</a>
+        </section>
+    </div>
+</main>

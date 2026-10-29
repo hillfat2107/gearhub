@@ -1,0 +1,149 @@
+@model GearHub.Models.Entities.AdminProduct
+@{
+    ViewBag.Title = "Thêm sản phẩm";
+    var specificationRows = Model.SpecificationRows ?? new System.Collections.Generic.List<GearHub.Models.Entities.ProductSpec>();
+}
+
+<main class="admin-page">
+    <div class="admin-shell admin-form-shell">
+        <a class="admin-text-link" href="@Url.Action("Index", "Admin")">← Quay lại danh sách</a>
+        <header class="admin-page-heading admin-create-heading">
+            <div>
+                <p class="eyebrow">GEARHUB / QUẢN TRỊ</p>
+                <h1>Thêm sản phẩm</h1>
+                <p class="admin-muted">Nhập thông tin sản phẩm, chọn danh mục và tải ảnh lên.</p>
+            </div>
+        </header>
+
+        <!-- enctype cho phép trình duyệt gửi file ảnh cùng các ô thông tin sản phẩm. -->
+        @using (Html.BeginForm("Create", "Admin", FormMethod.Post, new { @class = "admin-form", enctype = "multipart/form-data", data_specification_form = "true" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <label for="Name">Tên sản phẩm</label>
+            @Html.TextBoxFor(model => model.Name, new { id = "Name", maxlength = "120", placeholder = "Ví dụ: PC Gaming Core i5", required = "required" })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "admin-field-error" })
+
+            <div class="admin-form-columns">
+                <div>
+                    <label for="CategoryKey">Danh mục</label>
+                    <select id="CategoryKey" name="CategoryKey" required>
+                        <option value="">Chọn danh mục</option>
+                        <option value="pc-gaming">PC Gaming</option>
+                        <option value="laptop">Laptop</option>
+                        <option value="linh-kien">Linh kiện</option>
+                        <option value="man-hinh">Màn hình</option>
+                        <option value="gaming-gear">Gaming gear</option>
+                        <option value="phu-kien">Phụ kiện</option>
+                        <option value="console">Máy Game Console</option>
+                        <option value="pc-linh-kien">PC &amp; linh kiện</option>
+                    </select>
+                    @Html.ValidationMessageFor(model => model.CategoryKey, "", new { @class = "admin-field-error" })
+                </div>
+                <div>
+                    <label for="Price">Giá bán (đồng)</label>
+                    @Html.TextBoxFor(model => model.Price, new { id = "Price", type = "number", min = "1", step = "1", placeholder = "Ví dụ: 179900000", required = "required" })
+                    @Html.ValidationMessageFor(model => model.Price, "", new { @class = "admin-field-error" })
+                </div>
+            </div>
+
+            <label for="Description">Mô tả sản phẩm</label>
+            @Html.TextAreaFor(model => model.Description, new { id = "Description", rows = "4", maxlength = "1000", placeholder = "Viết vài dòng giới thiệu sản phẩm.", required = "required" })
+            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "admin-field-error" })
+
+            <section class="admin-specification-editor" data-specification-editor>
+                <div class="admin-specification-heading">
+                    <div>
+                        <label>Thông tin cấu hình</label>
+                        <span class="admin-field-help">Mỗi dòng gồm tên linh kiện và thông tin chi tiết, ví dụ CPU / Intel Core i5.</span>
+                    </div>
+                    <button class="button button-outline admin-add-specification" type="button" data-add-specification>Thêm dòng</button>
+                </div>
+                @Html.ValidationMessage("SpecificationRows", "", new { @class = "admin-field-error" })
+                <div class="admin-specification-table">
+                    <div class="admin-specification-columns" aria-hidden="true">
+                        <span>Tên linh kiện</span>
+                        <span>Thông tin chi tiết</span>
+                        <span></span>
+                    </div>
+                    <div class="admin-specification-rows" data-specification-rows>
+                        @for (var index = 0; index < specificationRows.Count; index++)
+                        {
+                            <div class="admin-specification-row" data-specification-row>
+                                @Html.TextBoxFor(model => model.SpecificationRows[index].Name, new { maxlength = "50", placeholder = "Ví dụ: CPU" })
+                                @Html.TextBoxFor(model => model.SpecificationRows[index].Value, new { maxlength = "250", placeholder = "Ví dụ: Intel Core i5 12400F" })
+                                <button class="admin-remove-specification" type="button" data-remove-specification aria-label="Xóa dòng này">Xóa</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </section>
+
+            <label for="imageFiles">Dãy ảnh sản phẩm</label>
+            <input id="imageFiles" name="imageFiles" type="file" accept=".jpg,.jpeg,.png,.webp" multiple required />
+            <span class="admin-field-help">Chọn tối đa 14 ảnh JPG, PNG hoặc WEBP; mỗi ảnh tối đa 5 MB. Ảnh đầu tiên sẽ làm ảnh đại diện.</span>
+            if (!string.IsNullOrEmpty(ViewBag.ImageError as string))
+            {
+                <span class="admin-field-error">@ViewBag.ImageError</span>
+            }
+
+            <div class="admin-form-actions">
+                <button class="button button-primary" type="submit">Lưu sản phẩm</button>
+                <a class="button button-outline" href="@Url.Action("Index", "Admin")">Hủy</a>
+            </div>
+        }
+    </div>
+</main>
+
+<template id="specification-row-template">
+    <div class="admin-specification-row" data-specification-row>
+        <input type="text" name="SpecificationRows[__index__].Name" maxlength="50" placeholder="Ví dụ: CPU" />
+        <input type="text" name="SpecificationRows[__index__].Value" maxlength="250" placeholder="Ví dụ: Intel Core i5 12400F" />
+        <button class="admin-remove-specification" type="button" data-remove-specification aria-label="Xóa dòng này">Xóa</button>
+    </div>
+</template>
+
+@section scripts {
+    <script>
+        (function () {
+            var editor = document.querySelector("[data-specification-editor]");
+            var form = document.querySelector("[data-specification-form]");
+            var rows = editor && editor.querySelector("[data-specification-rows]");
+            var template = document.getElementById("specification-row-template");
+            var addButton = editor && editor.querySelector("[data-add-specification]");
+
+            if (!editor || !form || !rows || !template || !addButton) {
+                return;
+            }
+
+            // Đánh lại số thứ tự sau khi xóa dòng để biểu mẫu gửi đủ các cấu hình lên máy chủ.
+            var updateRowNames = function () {
+                Array.prototype.forEach.call(rows.querySelectorAll("[data-specification-row]"), function (row, index) {
+                    row.querySelectorAll("input").forEach(function (input) {
+                        input.name = input.name.replace(/SpecificationRows\[\d+\]/, "SpecificationRows[" + index + "]");
+                    });
+                });
+            };
+
+            addButton.addEventListener("click", function () {
+                var rowCount = rows.querySelectorAll("[data-specification-row]").length;
+                if (rowCount >= 16) {
+                    return;
+                }
+
+                var rowMarkup = template.innerHTML.replace(/__index__/g, rowCount);
+                rows.insertAdjacentHTML("beforeend", rowMarkup);
+            });
+
+            rows.addEventListener("click", function (event) {
+                var removeButton = event.target.closest("[data-remove-specification]");
+                if (removeButton) {
+                    removeButton.closest("[data-specification-row]").remove();
+                    updateRowNames();
+                }
+            });
+
+            form.addEventListener("submit", updateRowNames);
+        })();
+    </script>
+}

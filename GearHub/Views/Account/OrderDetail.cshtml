@@ -1,0 +1,55 @@
+@{
+    ViewBag.Title = "Chi tiết đơn hàng";
+    var orderId = ViewBag.OrderId as string ?? "GH-DEMO-001";
+}
+
+<main class="order-page">
+    <div class="site-container">
+        <nav class="category-breadcrumb" aria-label="Đường dẫn trang">
+            <a href="@Url.Action("Index", "Home")">Trang chủ</a>
+            <span aria-hidden="true">/</span>
+            <a href="@Url.Action("OrderHistory", "Account")">Lịch sử mua hàng</a>
+            <span aria-hidden="true">/</span>
+            <span aria-current="page">Chi tiết đơn hàng</span>
+        </nav>
+
+        <header class="order-page-heading order-detail-heading">
+            <div>
+                <p class="account-kicker">GEARHUB / ĐƠN HÀNG</p>
+                <h1>Chi tiết đơn hàng</h1>
+                <p>Mã đơn: <strong>@orderId</strong></p>
+            </div>
+            <span class="order-status order-status-demo">Thông tin minh họa</span>
+        </header>
+
+        <div class="order-demo-note">
+            Đây là trang mẫu để trình bày thông tin đơn. Hiện chưa có dữ liệu mua hàng thật.
+        </div>
+
+        <section class="order-detail-card">
+            <h2>Thông tin đơn hàng</h2>
+            <div class="order-detail-info">
+                <div><span>Ngày đặt</span><strong>Chưa có dữ liệu</strong></div>
+                <div><span>Trạng thái</span><strong>Chưa có dữ liệu</strong></div>
+                <div><span>Phương thức thanh toán</span><strong>Chưa chọn</strong></div>
+                <div><span>Địa chỉ nhận hàng</span><strong>Sẽ hiện sau khi có đơn hàng</strong></div>
+            </div>
+        </section>
+
+        <section class="order-detail-card">
+            <h2>Sản phẩm trong đơn</h2>
+            <div class="order-products-empty">
+                Thông tin sản phẩm, số lượng và giá sẽ hiện ở khu vực này.
+            </div>
+            <div class="order-detail-total">
+                <span>Tổng thanh toán</span>
+                <strong>—</strong>
+            </div>
+        </section>
+
+        <div class="order-detail-actions">
+            <a class="button button-outline" href="@Url.Action("OrderHistory", "Account")">Quay lại lịch sử</a>
+            <a class="button button-primary" href="@Url.Action("Index", "Home")#danh-muc">Tiếp tục mua sắm</a>
+        </div>
+    </div>
+</main>

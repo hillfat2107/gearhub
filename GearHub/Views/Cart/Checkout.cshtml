@@ -1,0 +1,191 @@
+@model System.Collections.Generic.IList<GearHub.Models.ViewModels.CartItemViewModel>
+@using System.Linq
+@using System.Globalization
+@{
+    ViewBag.Title = "Địa chỉ giao hàng";
+    var cartItems = Model ?? new System.Collections.Generic.List<GearHub.Models.ViewModels.CartItemViewModel>();
+    var cartTotal = (decimal)ViewBag.CartTotal;
+    var shippingFee = (decimal?)ViewBag.ShippingFee;
+    var orderTotal = (decimal)ViewBag.OrderTotal;
+}
+
+<main class="cart-page">
+    <div class="site-container">
+        <nav class="category-breadcrumb" aria-label="Đường dẫn trang">
+            <a href="@Url.Action("Index", "Home")">Trang chủ</a>
+            <span aria-hidden="true">/</span>
+            <a href="@Url.Action("Index", "Cart")">Giỏ hàng</a>
+            <span aria-hidden="true">/</span>
+            <span aria-current="page">Địa chỉ giao hàng</span>
+        </nav>
+
+        <header class="cart-page-heading">
+            <p class="account-kicker">GEARHUB / ĐƠN HÀNG</p>
+            <h1>Thông tin giao hàng</h1>
+            <p>Điền địa chỉ nhận hàng để hoàn tất đơn đặt hàng mẫu.</p>
+        </header>
+
+        <ol class="cart-stepper" aria-label="Các bước mua hàng">
+            <li><span>1</span> Giỏ hàng</li>
+            <li class="is-active"><span>2</span> Giao hàng</li>
+            <li><span>3</span> Hoàn tất</li>
+        </ol>
+
+        <div class="checkout-layout">
+            <section class="checkout-panel">
+                <h2>Địa chỉ người nhận</h2>
+                <p class="checkout-example-note">Nhập địa chỉ nhận hàng của bạn. Phí vận chuyển sẽ được ước tính theo khu vực của địa chỉ này.</p>
+
+                @using (Html.BeginForm("PlaceOrder", "Cart", FormMethod.Post, new { @class = "checkout-form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="checkout-form-grid">
+                        <label>
+                            Họ và tên người nhận
+                            <input type="text" name="fullName" maxlength="100" value="@(ViewBag.FullName ?? "")" placeholder="Ví dụ: Nguyễn Văn An" required />
+                            @Html.ValidationMessage("fullName", "", new { @class = "checkout-field-error" })
+                        </label>
+                        <label>
+                            Số điện thoại
+                            <input type="tel" name="phone" maxlength="15" value="@(ViewBag.Phone ?? "")" placeholder="Ví dụ: 0901234567" required />
+                            @Html.ValidationMessage("phone", "", new { @class = "checkout-field-error" })
+                        </label>
+                        <label class="checkout-field-wide">
+                            Số nhà, tên đường
+                            <input type="text" name="streetAddress" maxlength="200" value="@(ViewBag.StreetAddress ?? "")" placeholder="Ví dụ: 123 đường Điện Biên Phủ" required />
+                            @Html.ValidationMessage("streetAddress", "", new { @class = "checkout-field-error" })
+                        </label>
+                        <label>
+                            Phường / xã
+                            <input type="text" name="ward" maxlength="80" value="@(ViewBag.Ward ?? "")" placeholder="Nhập phường hoặc xã" required />
+                            @Html.ValidationMessage("ward", "", new { @class = "checkout-field-error" })
+                        </label>
+                        <label>
+                            Quận / huyện
+                            <input type="text" name="district" maxlength="80" value="@(ViewBag.District ?? "")" placeholder="Ví dụ: Phú Nhuận" required />
+                            @Html.ValidationMessage("district", "", new { @class = "checkout-field-error" })
+                        </label>
+                        <label class="checkout-field-wide">
+                            Tỉnh / thành phố
+                            <input type="text" name="city" maxlength="100" value="@(ViewBag.City ?? "")" placeholder="Ví dụ: TP. Hồ Chí Minh" required />
+                            @Html.ValidationMessage("city", "", new { @class = "checkout-field-error" })
+                        </label>
+                        <label class="checkout-field-wide">
+                            Ghi chú cho người giao hàng
+                            <textarea name="note" rows="3" maxlength="300" placeholder="Không bắt buộc">@(ViewBag.Note ?? "")</textarea>
+                        </label>
+                    </div>
+
+                    <fieldset class="checkout-payment-methods">
+                        <legend>Phương thức thanh toán</legend>
+                        <label class="cart-payment-option">
+                            <input type="radio" name="paymentMethod" value="momo" checked="@(ViewBag.PaymentMethod == "momo")" />
+                            <span class="cart-payment-mark cart-payment-mark-momo" aria-hidden="true">M</span>
+                            <span class="cart-payment-text">
+                                <strong>Ví MoMo</strong>
+                                <small>Phần thanh toán này đang ở chế độ minh họa</small>
+                            </span>
+                        </label>
+                        <label class="cart-payment-option">
+                            <input type="radio" name="paymentMethod" value="cod" checked="@(ViewBag.PaymentMethod != "momo")" />
+                            <span class="cart-payment-mark cart-payment-mark-cod" aria-hidden="true">₫</span>
+                            <span class="cart-payment-text">
+                                <strong>Thanh toán khi nhận hàng</strong>
+                                <small>Trả tiền khi nhận sản phẩm</small>
+                            </span>
+                        </label>
+                        @Html.ValidationMessage("paymentMethod", "", new { @class = "checkout-field-error" })
+                    </fieldset>
+
+                    <div class="checkout-form-actions">
+                        <a class="button button-outline" href="@Url.Action("Index", "Cart")">Quay lại giỏ hàng</a>
+                        <button class="button button-primary" type="submit">Xác nhận đặt hàng</button>
+                    </div>
+                }
+            </section>
+
+            <aside class="checkout-summary">
+                <h2>Đơn hàng của bạn</h2>
+                <div class="checkout-summary-items">
+                    @foreach (var item in cartItems)
+                    {
+                        <div class="checkout-summary-item">
+                            <span>@item.Name <small>× @item.Quantity</small></span>
+                            <strong>@item.LineTotal.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))đ</strong>
+                        </div>
+                    }
+                </div>
+                <div class="cart-summary-row checkout-summary-subtotal">
+                    <span>Tiền hàng</span>
+                    <strong>@cartTotal.ToString("N0", CultureInfo.GetCultureInfo("vi-VN"))đ</strong>
+                </div>
+                <div class="cart-summary-row checkout-summary-shipping">
+                    <span>Ước tính phí vận chuyển</span>
+                    <strong data-shipping-fee>@(shippingFee.HasValue ? shippingFee.Value.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")) + "đ" : "Nhập địa chỉ")</strong>
+                </div>
+                <div class="cart-summary-total">
+                    <span>Tổng cộng tạm tính</span>
+                    <strong data-order-total data-subtotal="@cartTotal.ToString(CultureInfo.InvariantCulture)">@orderTotal.ToString("N0", CultureInfo.GetCultureInfo("vi-VN"))đ</strong>
+                </div>
+                <p class="checkout-shipping-note">Phí minh họa: 15.000đ cùng quận, 25.000đ nội thành TP.HCM, 45.000đ tỉnh/thành khác.</p>
+            </aside>
+        </div>
+    </div>
+</main>
+@section scripts {
+    <script>
+        (function () {
+            var districtInput = document.querySelector("[name='district']");
+            var cityInput = document.querySelector("[name='city']");
+            var shippingLabel = document.querySelector("[data-shipping-fee]");
+            var totalLabel = document.querySelector("[data-order-total]");
+
+            if (!districtInput || !cityInput || !shippingLabel || !totalLabel) {
+                return;
+            }
+
+            // Cập nhật phí ước tính khi người mua đổi quận hoặc tỉnh; máy chủ tính lại khi xác nhận.
+            var normalize = function (value) {
+                return value.toLowerCase()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "")
+                    .replace(/đ/g, "d")
+                    .replace(/[.]/g, " ")
+                    .trim()
+                    .replace(/\s+/g, " ");
+            };
+
+            var refreshShipping = function () {
+                var district = normalize(districtInput.value);
+                var city = normalize(cityInput.value);
+                var shippingFee = null;
+
+                if (district && city) {
+                    var sameCity = city.indexOf("ho chi minh") >= 0
+                        || city.indexOf("hcm") >= 0
+                        || city.indexOf("sai gon") >= 0;
+
+                    if (sameCity) {
+                        shippingFee = district.indexOf("binh thanh") >= 0 ? 15000 : 25000;
+                    } else {
+                        shippingFee = 45000;
+                    }
+                }
+
+                if (shippingFee === null) {
+                    shippingLabel.textContent = "Nhập địa chỉ";
+                    totalLabel.textContent = Number(totalLabel.dataset.subtotal).toLocaleString("vi-VN") + "đ";
+                    return;
+                }
+
+                var itemTotal = Number(totalLabel.dataset.subtotal);
+                shippingLabel.textContent = shippingFee.toLocaleString("vi-VN") + "đ";
+                totalLabel.textContent = (itemTotal + shippingFee).toLocaleString("vi-VN") + "đ";
+            };
+
+            districtInput.addEventListener("input", refreshShipping);
+            cityInput.addEventListener("input", refreshShipping);
+            refreshShipping();
+        })();
+    </script>
+}

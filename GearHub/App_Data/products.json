@@ -1,0 +1,54 @@
+[
+  {
+    "Id": "7a710ea26ca540ed8e85dd8e36ad0603",
+    "Name": "PC GVN Intel i5-12400F/ VGA RTX 3050 (Main H)",
+    "CategoryKey": "pc-gaming",
+    "CategoryName": "PC Gaming",
+    "Price": 17990000.0,
+    "Description": "Không có mô tả",
+    "Specifications": "CPU: Bộ vi xử lý Intel Core i5 12400F / 2.5GHz Turbo 4.4GHz (TRAY) - CHÍNH HÃNG\r\nRAM: Ram SSTC 16GB DDR4 3200MHz (U3200A-C22-16GB)\r\nSSD: Ổ Cứng SSD SSTC Oceanic Whitetip E130 512GB M.2 2280 PCIe NVMe (Gen 3x4)\r\nVGA: Card màn hình GIGABYTE GeForce RTX 3050 WINDFORCE OC 6G (GV-N3050WF2OCV2-6GD)",
+    "SpecificationRows": [
+      {
+        "Name": "CPU",
+        "Value": "Bộ vi xử lý Intel Core i5 12400F / 2.5GHz Turbo 4.4GHz (TRAY) - CHÍNH HÃNG"
+      },
+      {
+        "Name": "RAM",
+        "Value": "Ram SSTC 16GB DDR4 3200MHz (U3200A-C22-16GB)"
+      },
+      {
+        "Name": "SSD",
+        "Value": "Ổ Cứng SSD SSTC Oceanic Whitetip E130 512GB M.2 2280 PCIe NVMe (Gen 3x4)"
+      },
+      {
+        "Name": "VGA",
+        "Value": "Card màn hình GIGABYTE GeForce RTX 3050 WINDFORCE OC 6G (GV-N3050WF2OCV2-6GD)"
+      }
+    ],
+    "ImagePath": "~/wwwroot/images/products/9941fff68e9c457da556eefbb6b6ab79.webp",
+    "ImagePaths": [
+      "~/wwwroot/images/products/9941fff68e9c457da556eefbb6b6ab79.webp"
+    ],
+    "CreatedAt": "2026-10-28T23:41:18.631844+07:00"
+  },
+  {
+    "Id": "e0fc832889c7440cb27ceab2cd2f8f89",
+    "Name": "Anh Độ Mixi",
+    "CategoryKey": "console",
+    "CategoryName": "Máy Game Console",
+    "Price": 11.0,
+    "Description": "Hẻm 120 Yên Lãng",
+    "Specifications": "Alo: Vú à Vú",
+    "SpecificationRows": [
+      {
+        "Name": "Alo",
+        "Value": "Vú à Vú"
+      }
+    ],
+    "ImagePath": "~/wwwroot/images/products/343389e391884ed28437289211161d99.webp",
+    "ImagePaths": [
+      "~/wwwroot/images/products/343389e391884ed28437289211161d99.webp"
+    ],
+    "CreatedAt": "2026-10-29T00:38:42.4808955+07:00"
+  }
+]

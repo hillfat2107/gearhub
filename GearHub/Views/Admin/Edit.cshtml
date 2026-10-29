@@ -1,0 +1,181 @@
+@model GearHub.Models.Entities.AdminProduct
+@{
+    ViewBag.Title = "Sửa sản phẩm";
+    var specificationRows = Model.SpecificationRows ?? new System.Collections.Generic.List<GearHub.Models.Entities.ProductSpec>();
+}
+
+<main class="admin-page">
+    <div class="admin-shell admin-form-shell">
+        <a class="admin-text-link" href="@Url.Action("Index", "Admin")">← Quay lại danh sách</a>
+        <header class="admin-page-heading admin-create-heading">
+            <div>
+                <p class="eyebrow">GEARHUB / QUẢN TRỊ</p>
+                <h1>Sửa sản phẩm</h1>
+                <p class="admin-muted">Cập nhật nội dung cần đổi rồi lưu lại.</p>
+            </div>
+        </header>
+
+
+        <!-- Biểu mẫu gửi lại mã sản phẩm cùng các thông tin đã được chỉnh sửa. -->
+        @using (Html.BeginForm("Edit", "Admin", FormMethod.Post, new { @class = "admin-form", enctype = "multipart/form-data", data_specification_form = "true" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.Id)
+            <input type="hidden" name="imageListSubmitted" value="true" />
+
+            <!-- Mỗi ảnh có một ô ẩn; khi bấm xóa, ô đó cũng được bỏ khỏi biểu mẫu. -->
+            <div class="admin-current-gallery" data-current-image-gallery>
+                @foreach (var imagePath in (System.Collections.Generic.List<string>)ViewBag.CurrentImagePaths)
+                {
+                    <div class="admin-current-image-card" data-current-image-card>
+                        <img src="@Url.Content(imagePath)" alt="Ảnh hiện tại của @Model.Name" />
+                        <input type="hidden" name="keepImagePaths" value="@imagePath" />
+                        <button class="admin-remove-image" type="button" data-remove-current-image>Xóa ảnh</button>
+                    </div>
+                }
+                <p class="admin-no-current-images" data-no-current-images hidden>Không còn ảnh cũ được giữ. Bạn có thể tải ảnh mới ở bên dưới.</p>
+            </div>
+
+            <label for="Name">Tên sản phẩm</label>
+            @Html.TextBoxFor(model => model.Name, new { id = "Name", maxlength = "120", required = "required" })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "admin-field-error" })
+
+            <div class="admin-form-columns">
+                <div>
+                    <label for="CategoryKey">Danh mục</label>
+                    @Html.DropDownListFor(model => model.CategoryKey, (System.Web.Mvc.SelectList)ViewBag.CategoryOptions, "Chọn danh mục", new { id = "CategoryKey", required = "required" })
+                    @Html.ValidationMessageFor(model => model.CategoryKey, "", new { @class = "admin-field-error" })
+                </div>
+                <div>
+                    <label for="Price">Giá bán (đồng)</label>
+                    @Html.TextBoxFor(model => model.Price, new { id = "Price", type = "number", min = "1", step = "1", required = "required" })
+                    @Html.ValidationMessageFor(model => model.Price, "", new { @class = "admin-field-error" })
+                </div>
+            </div>
+
+            <label for="Description">Mô tả sản phẩm</label>
+            @Html.TextAreaFor(model => model.Description, new { id = "Description", rows = "4", maxlength = "1000", required = "required" })
+            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "admin-field-error" })
+
+            <section class="admin-specification-editor" data-specification-editor>
+                <div class="admin-specification-heading">
+                    <div>
+                        <label>Thông tin cấu hình</label>
+                        <span class="admin-field-help">Mỗi dòng gồm tên linh kiện và thông tin chi tiết, ví dụ CPU / Intel Core i5.</span>
+                    </div>
+                    <button class="button button-outline admin-add-specification" type="button" data-add-specification>Thêm dòng</button>
+                </div>
+                @Html.ValidationMessage("SpecificationRows", "", new { @class = "admin-field-error" })
+                <div class="admin-specification-table">
+                    <div class="admin-specification-columns" aria-hidden="true">
+                        <span>Tên linh kiện</span>
+                        <span>Thông tin chi tiết</span>
+                        <span></span>
+                    </div>
+                    <div class="admin-specification-rows" data-specification-rows>
+                        @for (var index = 0; index < specificationRows.Count; index++)
+                        {
+                            <div class="admin-specification-row" data-specification-row>
+                                @Html.TextBoxFor(model => model.SpecificationRows[index].Name, new { maxlength = "50", placeholder = "Ví dụ: CPU" })
+                                @Html.TextBoxFor(model => model.SpecificationRows[index].Value, new { maxlength = "250", placeholder = "Ví dụ: Intel Core i5 12400F" })
+                                <button class="admin-remove-specification" type="button" data-remove-specification aria-label="Xóa dòng này">Xóa</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </section>
+
+            <label for="imageFiles">Dãy ảnh mới (không bắt buộc)</label>
+            <input id="imageFiles" name="imageFiles" type="file" accept=".jpg,.jpeg,.png,.webp" multiple />
+            <span class="admin-field-help">Xóa ảnh cũ ngay phía trên hoặc chọn thêm ảnh mới; tổng cộng tối đa 14 ảnh, mỗi ảnh tối đa 5 MB.</span>
+            if (!string.IsNullOrEmpty(ViewBag.ImageError as string))
+            {
+                <span class="admin-field-error">@ViewBag.ImageError</span>
+            }
+
+            <div class="admin-form-actions">
+                <button class="button button-primary" type="submit">Lưu thay đổi</button>
+                <a class="button button-outline" href="@Url.Action("Index", "Admin")">Hủy</a>
+            </div>
+        }
+    </div>
+</main>
+
+<template id="specification-row-template">
+    <div class="admin-specification-row" data-specification-row>
+        <input type="text" name="SpecificationRows[__index__].Name" maxlength="50" placeholder="Ví dụ: CPU" />
+        <input type="text" name="SpecificationRows[__index__].Value" maxlength="250" placeholder="Ví dụ: Intel Core i5 12400F" />
+        <button class="admin-remove-specification" type="button" data-remove-specification aria-label="Xóa dòng này">Xóa</button>
+    </div>
+</template>
+
+@section scripts {
+    <script>
+        (function () {
+            var editor = document.querySelector("[data-specification-editor]");
+            var form = document.querySelector("[data-specification-form]");
+            var rows = editor && editor.querySelector("[data-specification-rows]");
+            var template = document.getElementById("specification-row-template");
+            var addButton = editor && editor.querySelector("[data-add-specification]");
+
+            if (!editor || !form || !rows || !template || !addButton) {
+                return;
+            }
+
+            // Đánh lại số thứ tự sau khi xóa dòng để biểu mẫu gửi đủ các cấu hình lên máy chủ.
+            var updateRowNames = function () {
+                Array.prototype.forEach.call(rows.querySelectorAll("[data-specification-row]"), function (row, index) {
+                    row.querySelectorAll("input").forEach(function (input) {
+                        input.name = input.name.replace(/SpecificationRows\[\d+\]/, "SpecificationRows[" + index + "]");
+                    });
+                });
+            };
+
+            addButton.addEventListener("click", function () {
+                var rowCount = rows.querySelectorAll("[data-specification-row]").length;
+                if (rowCount >= 16) {
+                    return;
+                }
+
+                var rowMarkup = template.innerHTML.replace(/__index__/g, rowCount);
+                rows.insertAdjacentHTML("beforeend", rowMarkup);
+            });
+
+            rows.addEventListener("click", function (event) {
+                var removeButton = event.target.closest("[data-remove-specification]");
+                if (removeButton) {
+                    removeButton.closest("[data-specification-row]").remove();
+                    updateRowNames();
+                }
+            });
+
+            form.addEventListener("submit", updateRowNames);
+        })();
+    </script>
+    <script>
+        (function () {
+            var gallery = document.querySelector("[data-current-image-gallery]");
+            if (!gallery) {
+                return;
+            }
+
+            var emptyMessage = gallery.querySelector("[data-no-current-images]");
+            var updateEmptyMessage = function () {
+                emptyMessage.hidden = gallery.querySelectorAll("[data-current-image-card]").length > 0;
+            };
+
+            gallery.addEventListener("click", function (event) {
+                var removeButton = event.target.closest("[data-remove-current-image]");
+                if (!removeButton) {
+                    return;
+                }
+
+                // Chỉ bỏ ảnh khỏi biểu mẫu; file trên máy chủ chỉ bị xóa sau khi lưu thành công.
+                removeButton.closest("[data-current-image-card]").remove();
+                updateEmptyMessage();
+            });
+
+            updateEmptyMessage();
+        })();
+    </script>
+}

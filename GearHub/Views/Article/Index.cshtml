@@ -1,0 +1,34 @@
+@{
+    ViewBag.Title = "Tin công nghệ";
+}
+
+<main class="article-page">
+    <div class="site-container">
+        <nav class="category-breadcrumb" aria-label="Đường dẫn trang">
+            <a href="@Url.Action("Index", "Home")">Trang chủ</a>
+            <span aria-hidden="true">/</span>
+            <span aria-current="page">Tin công nghệ</span>
+        </nav>
+
+        <header class="article-page-heading">
+            <p class="account-kicker">GEARTEK / GÓC CÔNG NGHỆ</p>
+            <h1>Tin công nghệ</h1>
+            <p>Cập nhật kiến thức, sản phẩm mới và xu hướng dành cho người yêu công nghệ.</p>
+        </header>
+
+        <nav class="article-topic-list" aria-label="Chủ đề tin tức">
+            <span class="is-current">Tất cả chủ đề</span>
+            <span>PC &amp; linh kiện</span>
+            <span>Gaming gear</span>
+            <span>Xu hướng công nghệ</span>
+        </nav>
+
+        <!-- Nội dung bài viết sẽ được đặt tại khu vực này khi nhóm có bài đăng. -->
+        <section class="article-empty-state" aria-label="Danh sách bài viết">
+            <span class="article-empty-mark" aria-hidden="true">GT</span>
+            <h2>Bài viết sẽ được cập nhật tại đây</h2>
+            <p>Khu vực này đã sẵn sàng để nhóm thêm tiêu đề, hình ảnh và nội dung bài viết.</p>
+            <a class="button button-outline" href="@Url.Action("Index", "Home")">Về trang chủ</a>
+        </section>
+    </div>
+</main>

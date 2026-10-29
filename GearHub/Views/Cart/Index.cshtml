@@ -1,0 +1,166 @@
+@using System.Linq
+@model System.Collections.Generic.IList<GearHub.Models.ViewModels.CartItemViewModel>
+@{
+    ViewBag.Title = "Giỏ hàng";
+    var cartItems = Model ?? new System.Collections.Generic.List<GearHub.Models.ViewModels.CartItemViewModel>();
+    var itemCount = cartItems.Sum(item => item.Quantity);
+    var cartTotal = cartItems.Sum(item => item.LineTotal);
+}
+
+<main class="cart-page">
+    <div class="site-container">
+        <nav class="category-breadcrumb" aria-label="Đường dẫn trang">
+            <a href="@Url.Action("Index", "Home")">Trang chủ</a>
+            <span aria-hidden="true">/</span>
+            <span aria-current="page">Giỏ hàng</span>
+        </nav>
+
+        <header class="cart-page-heading">
+            <p class="account-kicker">GEARHUB / ĐƠN HÀNG</p>
+            <h1>Giỏ hàng của bạn</h1>
+        </header>
+
+        <ol class="cart-stepper" aria-label="Các bước mua hàng">
+            <li class="is-active"><span>1</span> Giỏ hàng</li>
+            <li><span>2</span> Thanh toán</li>
+            <li><span>3</span> Hoàn tất</li>
+        </ol>
+
+        <div class="cart-layout">
+            <section class="cart-items-panel" aria-label="Sản phẩm trong giỏ hàng">
+                @if (!string.IsNullOrEmpty(TempData["CartMessage"] as string))
+                {
+                    <div class="admin-message admin-message-success">@TempData["CartMessage"]</div>
+                }
+                <div class="cart-panel-heading">
+                    <h2>Sản phẩm đã chọn</h2>
+                    <span>@itemCount sản phẩm</span>
+                </div>
+
+                @if (cartItems.Count == 0)
+                {
+                    <div class="cart-empty-state">
+                        <svg viewBox="0 0 64 64" aria-hidden="true">
+                            <path d="M8 12h7l6 30h29l7-22H18" />
+                            <circle cx="26" cy="51" r="3" />
+                            <circle cx="47" cy="51" r="3" />
+                        </svg>
+                        <h2>Giỏ hàng đang trống</h2>
+                        <p>Hãy chọn món đồ bạn cần, sản phẩm sẽ được gom lại ở đây.</p>
+                        <a class="button button-primary" href="@Url.Action("Index", "Home")#danh-muc">Tiếp tục mua sắm</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="cart-item-list">
+                        @foreach (var item in cartItems)
+                        {
+                            <article class="cart-item-row">
+                                <img src="@Url.Content(item.ImagePath)" alt="@item.Name" />
+                                <div class="cart-item-info">
+                                    <span>@item.CategoryName</span>
+                                    <h3>@item.Name</h3>
+                                    <p>@item.Description</p>
+                                    <strong>@item.Price.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))đ</strong>
+                                    <small>Số lượng: @item.Quantity · Thành tiền: @item.LineTotal.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))đ</small>
+                                </div>
+                                @using (Html.BeginForm("Remove", "Cart", FormMethod.Post, new { @class = "cart-remove-form" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.Hidden("productId", item.ProductId)
+                                    <button type="submit" class="cart-remove-button">Xóa</button>
+                                }
+                            </article>
+                        }
+                    </div>
+                    <div class="cart-continue-row">
+                        <a class="admin-text-link" href="@Url.Action("Index", "Home")#danh-muc">← Tiếp tục mua sắm</a>
+                    </div>
+                }
+            </section>
+
+            <aside class="cart-summary-panel" aria-label="Tóm tắt đơn hàng">
+                <h2>Tóm tắt đơn hàng</h2>
+                <div class="cart-summary-row">
+                    <span>Tiền hàng</span>
+                    <strong>@cartTotal.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))đ</strong>
+                </div>
+
+                <div class="cart-voucher">
+                    <label for="cart-voucher-code">Mã giảm giá</label>
+                    <div class="cart-voucher-entry">
+                        <input id="cart-voucher-code" type="text" placeholder="Nhập mã voucher" />
+                        <button id="apply-voucher" class="button button-outline" type="button">Áp dụng</button>
+                    </div>
+                    <p id="voucher-status" role="status" aria-live="polite">
+                        @(itemCount == 0 ? "Thêm sản phẩm vào giỏ để dùng voucher." : "Chưa có mã voucher mẫu để áp dụng.")
+                    </p>
+                </div>
+
+                <div class="cart-summary-row">
+                    <span>Giảm giá</span>
+                    <strong>0₫</strong>
+                </div>
+                <div class="cart-summary-row">
+                    <span>Phí vận chuyển</span>
+                    <span>Tính sau</span>
+                </div>
+                <div class="cart-summary-total">
+                    <span>Tổng cộng</span>
+                    <strong>@cartTotal.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))đ</strong>
+                </div>
+
+                @using (Html.BeginForm("Checkout", "Cart", FormMethod.Post, new { @class = "cart-checkout-form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <fieldset class="cart-payment-methods">
+                        <legend>Phương thức thanh toán</legend>
+                        <label class="cart-payment-option">
+                            <input type="radio" name="paymentMethod" value="momo" />
+                            <span class="cart-payment-mark cart-payment-mark-momo" aria-hidden="true">M</span>
+                            <span class="cart-payment-text">
+                                <strong>Ví MoMo</strong>
+                                <small>Thanh toán qua ví điện tử</small>
+                            </span>
+                        </label>
+                        <label class="cart-payment-option">
+                            <input type="radio" name="paymentMethod" value="cod" checked />
+                            <span class="cart-payment-mark cart-payment-mark-cod" aria-hidden="true">₫</span>
+                            <span class="cart-payment-text">
+                                <strong>Thanh toán khi nhận hàng</strong>
+                                <small>Trả tiền khi nhận được sản phẩm</small>
+                            </span>
+                        </label>
+                    </fieldset>
+
+                    <p>Phí vận chuyển sẽ được tính khi hoàn thiện đơn hàng.</p>
+                    if (itemCount == 0)
+                    {
+                        <button class="button button-primary cart-checkout-button" type="button" disabled>Tiến hành đặt hàng</button>
+                    }
+                    else
+                    {
+                        <button class="button button-primary cart-checkout-button" type="submit">Tiến hành đặt hàng</button>
+                    }
+                }
+            </aside>
+        </div>
+    </div>
+</main>
+@section scripts {
+    <script>
+        // Báo rõ khi chưa có sản phẩm hoặc khi nhóm chưa cài mã voucher mẫu.
+        document.getElementById("apply-voucher").addEventListener("click", function () {
+            var voucher = document.getElementById("cart-voucher-code");
+            var status = document.getElementById("voucher-status");
+
+            if (!voucher.value.trim()) {
+                status.textContent = "Bạn hãy nhập mã voucher trước.";
+                voucher.focus();
+                return;
+            }
+
+            status.textContent = "Mã này chưa có trong danh sách voucher.";
+        });
+    </script>
+}

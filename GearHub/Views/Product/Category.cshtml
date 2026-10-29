@@ -1,0 +1,458 @@
+@{
+    var categoryKey = ViewBag.CategoryKey as string ?? "pc-gaming";
+    var categoryName = ViewBag.CategoryName as string ?? "PC Gaming";
+    var products = ViewBag.Products as System.Collections.Generic.List<GearHub.Models.Entities.AdminProduct> ?? new System.Collections.Generic.List<GearHub.Models.Entities.AdminProduct>();
+    ViewBag.Title = categoryName;
+}
+
+<main class="category-page">
+    <div class="site-container">
+        <!-- Đường dẫn nhỏ giúp người dùng quay lại trang chủ. -->
+        <nav class="category-breadcrumb" aria-label="Đường dẫn trang">
+            <a href="@Url.Action("Index", "Home")">Trang chủ</a>
+            <span aria-hidden="true">/</span>
+            <span aria-current="page">@categoryName</span>
+        </nav>
+
+        <header class="category-page-title">
+            <h1>@categoryName</h1>
+            <p>Chọn tiêu chí phù hợp với nhu cầu. Sản phẩm sẽ hiện ở khu vực bên phải khi bạn thêm dữ liệu.</p>
+        </header>
+
+        <div class="category-layout">
+            <!-- Các lựa chọn dưới đây là khung giao diện để nhóm nối với dữ liệu sau này. -->
+            <details class="category-filter-panel" aria-label="Bộ lọc @categoryName">
+                <summary class="category-filter-heading">
+                    <svg class="category-filter-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#292d33" stroke-width="1.8" aria-hidden="true">
+                        <path d="M4 6h16M4 12h16M4 18h16" />
+                        <circle cx="8" cy="6" r="2" />
+                        <circle cx="15" cy="12" r="2" />
+                        <circle cx="10" cy="18" r="2" />
+                    </svg>
+                    <h2>Bộ lọc tìm kiếm</h2>
+                    <svg class="category-filter-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M4 8l8 8 8-8" fill="none" stroke="#555d65" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </summary>
+
+                <div class="category-filter-body">
+                    <details class="category-filter-group" open>
+                        <summary>Khoảng giá</summary>
+                        <div class="category-filter-options">
+                            <label><input type="checkbox" name="price" value="all" checked /> Tất cả</label>
+                            <label><input type="checkbox" name="price" value="under-15m" /> Dưới 15 triệu</label>
+                            <label><input type="checkbox" name="price" value="15-30m" /> Từ 15 - 30 triệu</label>
+                            <label><input type="checkbox" name="price" value="30-50m" /> Từ 30 - 50 triệu</label>
+                            <label><input type="checkbox" name="price" value="50-100m" /> Từ 50 - 100 triệu</label>
+                            <label><input type="checkbox" name="price" value="over-100m" /> Trên 100 triệu</label>
+                        </div>
+                        <label class="category-price-caption">Hoặc nhập khoảng giá phù hợp:</label>
+                        <div class="category-price-inputs">
+                            <input type="number" name="priceMin" min="0" placeholder="Giá từ" aria-label="Giá thấp nhất" />
+                            <input type="number" name="priceMax" min="0" placeholder="Giá đến" aria-label="Giá cao nhất" />
+                        </div>
+                    </details>
+
+                    @if (categoryKey == "console")
+                    {
+                        <details class="category-filter-group" open>
+                            <summary>Nền tảng</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="platform" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="platform" value="playstation" /> PlayStation</label>
+                                <label><input type="checkbox" name="platform" value="xbox" /> Xbox</label>
+                                <label><input type="checkbox" name="platform" value="nintendo" /> Nintendo</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>Dòng máy</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="consoleModel" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="consoleModel" value="ps5" /> PlayStation 5</label>
+                                <label><input type="checkbox" name="consoleModel" value="ps5-pro" /> PlayStation 5 Pro</label>
+                                <label><input type="checkbox" name="consoleModel" value="series-x" /> Xbox Series X</label>
+                                <label><input type="checkbox" name="consoleModel" value="series-s" /> Xbox Series S</label>
+                                <label><input type="checkbox" name="consoleModel" value="switch" /> Nintendo Switch</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>Dung lượng lưu trữ</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="storage" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="storage" value="512gb" /> 512 GB</label>
+                                <label><input type="checkbox" name="storage" value="1tb" /> 1 TB</label>
+                                <label><input type="checkbox" name="storage" value="2tb" /> 2 TB</label>
+                            </div>
+                        </details>
+                    }
+                    else if (categoryKey == "pc-linh-kien")
+                    {
+                        <details class="category-filter-group" open>
+                            <summary>Loại sản phẩm</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="productType" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="productType" value="pc-gaming" /> PC Gaming</label>
+                                <label><input type="checkbox" name="productType" value="cpu" /> CPU</label>
+                                <label><input type="checkbox" name="productType" value="gpu" /> Card đồ họa</label>
+                                <label><input type="checkbox" name="productType" value="ram" /> RAM</label>
+                                <label><input type="checkbox" name="productType" value="mainboard" /> Mainboard</label>
+                                <label><input type="checkbox" name="productType" value="storage" /> Ổ cứng</label>
+                                <label><input type="checkbox" name="productType" value="power" /> Nguồn máy tính</label>
+                                <label><input type="checkbox" name="productType" value="case" /> Vỏ case</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>Thương hiệu</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="brand" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="brand" value="asus" /> ASUS</label>
+                                <label><input type="checkbox" name="brand" value="msi" /> MSI</label>
+                                <label><input type="checkbox" name="brand" value="gigabyte" /> Gigabyte</label>
+                                <label><input type="checkbox" name="brand" value="intel" /> Intel</label>
+                                <label><input type="checkbox" name="brand" value="amd" /> AMD</label>
+                                <label><input type="checkbox" name="brand" value="nvidia" /> NVIDIA</label>
+                                <label><input type="checkbox" name="brand" value="kingston" /> Kingston</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>Nền tảng CPU</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="platform" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="platform" value="intel" /> Intel</label>
+                                <label><input type="checkbox" name="platform" value="amd" /> AMD</label>
+                            </div>
+                        </details>
+                    }
+                    else if (categoryKey == "pc-gaming")
+                    {
+                        <details class="category-filter-group" open>
+                            <summary>CPU</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="cpu" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="cpu" value="intel-i5" /> Intel Core i5</label>
+                                <label><input type="checkbox" name="cpu" value="intel-i7" /> Intel Core i7</label>
+                                <label><input type="checkbox" name="cpu" value="intel-i9" /> Intel Core i9</label>
+                                <label><input type="checkbox" name="cpu" value="amd-ryzen-5" /> AMD Ryzen 5</label>
+                                <label><input type="checkbox" name="cpu" value="amd-ryzen-7" /> AMD Ryzen 7</label>
+                                <label><input type="checkbox" name="cpu" value="amd-ryzen-9" /> AMD Ryzen 9</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>Card đồ họa</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="gpu" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="gpu" value="geforce-rtx" /> NVIDIA GeForce RTX</label>
+                                <label><input type="checkbox" name="gpu" value="radeon-rx" /> AMD Radeon RX</label>
+                                <label><input type="checkbox" name="gpu" value="intel-arc" /> Intel Arc</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>RAM</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="ram" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="ram" value="8gb" /> 8 GB</label>
+                                <label><input type="checkbox" name="ram" value="16gb" /> 16 GB</label>
+                                <label><input type="checkbox" name="ram" value="32gb" /> 32 GB</label>
+                                <label><input type="checkbox" name="ram" value="64gb-plus" /> 64 GB trở lên</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>Mainboard</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="mainboard" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="mainboard" value="h610" /> Intel H610</label>
+                                <label><input type="checkbox" name="mainboard" value="b760" /> Intel B760</label>
+                                <label><input type="checkbox" name="mainboard" value="b650" /> AMD B650</label>
+                                <label><input type="checkbox" name="mainboard" value="x670" /> AMD X670</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>Lưu trữ</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="storage" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="storage" value="512gb" /> SSD 512 GB</label>
+                                <label><input type="checkbox" name="storage" value="1tb" /> SSD 1 TB</label>
+                                <label><input type="checkbox" name="storage" value="2tb-plus" /> SSD 2 TB trở lên</label>
+                            </div>
+                        </details>
+                    }
+                    else if (categoryKey == "laptop")
+                    {
+                        <details class="category-filter-group" open>
+                            <summary>Thương hiệu</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="brand" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="brand" value="asus" /> ASUS</label>
+                                <label><input type="checkbox" name="brand" value="acer" /> Acer</label>
+                                <label><input type="checkbox" name="brand" value="dell" /> Dell</label>
+                                <label><input type="checkbox" name="brand" value="lenovo" /> Lenovo</label>
+                                <label><input type="checkbox" name="brand" value="msi" /> MSI</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>CPU</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="cpu" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="cpu" value="intel-core-i5" /> Intel Core i5</label>
+                                <label><input type="checkbox" name="cpu" value="intel-core-i7" /> Intel Core i7</label>
+                                <label><input type="checkbox" name="cpu" value="amd-ryzen-5" /> AMD Ryzen 5</label>
+                                <label><input type="checkbox" name="cpu" value="amd-ryzen-7" /> AMD Ryzen 7</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>Card đồ họa</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="gpu" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="gpu" value="rtx-4050" /> GeForce RTX 4050</label>
+                                <label><input type="checkbox" name="gpu" value="rtx-4060" /> GeForce RTX 4060</label>
+                                <label><input type="checkbox" name="gpu" value="rtx-4070" /> GeForce RTX 4070</label>
+                                <label><input type="checkbox" name="gpu" value="integrated" /> Card tích hợp</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>RAM</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="ram" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="ram" value="8gb" /> 8 GB</label>
+                                <label><input type="checkbox" name="ram" value="16gb" /> 16 GB</label>
+                                <label><input type="checkbox" name="ram" value="32gb" /> 32 GB trở lên</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>Kích thước màn hình</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="screen" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="screen" value="14" /> 14 inch</label>
+                                <label><input type="checkbox" name="screen" value="15-16" /> 15 - 16 inch</label>
+                                <label><input type="checkbox" name="screen" value="17-plus" /> 17 inch trở lên</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>Lưu trữ</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="storage" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="storage" value="512gb" /> SSD 512 GB</label>
+                                <label><input type="checkbox" name="storage" value="1tb" /> SSD 1 TB</label>
+                                <label><input type="checkbox" name="storage" value="2tb-plus" /> SSD 2 TB trở lên</label>
+                            </div>
+                        </details>
+                    }
+                    else if (categoryKey == "linh-kien")
+                    {
+                        <details class="category-filter-group" open>
+                            <summary>Loại linh kiện</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="part" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="part" value="cpu" /> CPU</label>
+                                <label><input type="checkbox" name="part" value="gpu" /> Card đồ họa</label>
+                                <label><input type="checkbox" name="part" value="ram" /> RAM</label>
+                                <label><input type="checkbox" name="part" value="mainboard" /> Mainboard</label>
+                                <label><input type="checkbox" name="part" value="storage" /> Ổ cứng</label>
+                                <label><input type="checkbox" name="part" value="power" /> Nguồn máy tính</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>Thương hiệu</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="brand" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="brand" value="asus" /> ASUS</label>
+                                <label><input type="checkbox" name="brand" value="gigabyte" /> Gigabyte</label>
+                                <label><input type="checkbox" name="brand" value="msi" /> MSI</label>
+                                <label><input type="checkbox" name="brand" value="intel" /> Intel</label>
+                                <label><input type="checkbox" name="brand" value="amd" /> AMD</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>RAM</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="ram" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="ram" value="ddr4" /> DDR4</label>
+                                <label><input type="checkbox" name="ram" value="ddr5" /> DDR5</label>
+                                <label><input type="checkbox" name="ram" value="16gb" /> 16 GB</label>
+                                <label><input type="checkbox" name="ram" value="32gb-plus" /> 32 GB trở lên</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>Dòng card đồ họa</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="gpu" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="gpu" value="rtx-50" /> NVIDIA GeForce RTX 50</label>
+                                <label><input type="checkbox" name="gpu" value="rtx-40" /> NVIDIA GeForce RTX 40</label>
+                                <label><input type="checkbox" name="gpu" value="radeon-rx" /> AMD Radeon RX</label>
+                            </div>
+                        </details>
+                    }
+                    else if (categoryKey == "man-hinh")
+                    {
+                        <details class="category-filter-group" open>
+                            <summary>Kích thước</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="size" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="size" value="under-24" /> Dưới 24 inch</label>
+                                <label><input type="checkbox" name="size" value="24" /> 24 inch</label>
+                                <label><input type="checkbox" name="size" value="27" /> 27 inch</label>
+                                <label><input type="checkbox" name="size" value="32-plus" /> 32 inch trở lên</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>Độ phân giải</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="resolution" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="resolution" value="full-hd" /> Full HD</label>
+                                <label><input type="checkbox" name="resolution" value="2k" /> 2K / QHD</label>
+                                <label><input type="checkbox" name="resolution" value="4k" /> 4K / UHD</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>Tần số quét</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="refresh" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="refresh" value="60-75" /> 60 - 75 Hz</label>
+                                <label><input type="checkbox" name="refresh" value="144" /> 144 Hz</label>
+                                <label><input type="checkbox" name="refresh" value="165-180" /> 165 - 180 Hz</label>
+                                <label><input type="checkbox" name="refresh" value="240-plus" /> 240 Hz trở lên</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>Tấm nền</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="panel" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="panel" value="ips" /> IPS</label>
+                                <label><input type="checkbox" name="panel" value="va" /> VA</label>
+                                <label><input type="checkbox" name="panel" value="oled" /> OLED</label>
+                            </div>
+                        </details>
+                    }
+                    else if (categoryKey == "gaming-gear")
+                    {
+                        <details class="category-filter-group" open>
+                            <summary>Loại thiết bị</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="gearType" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="gearType" value="mouse" /> Chuột gaming</label>
+                                <label><input type="checkbox" name="gearType" value="keyboard" /> Bàn phím gaming</label>
+                                <label><input type="checkbox" name="gearType" value="headset" /> Tai nghe gaming</label>
+                                <label><input type="checkbox" name="gearType" value="mousepad" /> Lót chuột</label>
+                                <label><input type="checkbox" name="gearType" value="controller" /> Tay cầm chơi game</label>
+                                <label><input type="checkbox" name="gearType" value="microphone" /> Micro</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>Kết nối</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="connection" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="connection" value="wired" /> Có dây</label>
+                                <label><input type="checkbox" name="connection" value="24ghz" /> Không dây 2.4 GHz</label>
+                                <label><input type="checkbox" name="connection" value="bluetooth" /> Bluetooth</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>Thương hiệu</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="brand" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="brand" value="logitech" /> Logitech</label>
+                                <label><input type="checkbox" name="brand" value="razer" /> Razer</label>
+                                <label><input type="checkbox" name="brand" value="corsair" /> Corsair</label>
+                                <label><input type="checkbox" name="brand" value="hyperx" /> HyperX</label>
+                                <label><input type="checkbox" name="brand" value="steelseries" /> SteelSeries</label>
+                                <label><input type="checkbox" name="brand" value="asus" /> ASUS</label>
+                            </div>
+                        </details>
+                    }
+                    else if (categoryKey == "phu-kien")
+                    {
+                        <details class="category-filter-group" open>
+                            <summary>Loại phụ kiện</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="type" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="type" value="mouse" /> Chuột</label>
+                                <label><input type="checkbox" name="type" value="keyboard" /> Bàn phím</label>
+                                <label><input type="checkbox" name="type" value="headset" /> Tai nghe</label>
+                                <label><input type="checkbox" name="type" value="mousepad" /> Lót chuột</label>
+                                <label><input type="checkbox" name="type" value="other" /> Phụ kiện khác</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>Kết nối</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="connection" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="connection" value="wired" /> Có dây</label>
+                                <label><input type="checkbox" name="connection" value="wireless" /> Không dây</label>
+                                <label><input type="checkbox" name="connection" value="bluetooth" /> Bluetooth</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>Thương hiệu</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="brand" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="brand" value="logitech" /> Logitech</label>
+                                <label><input type="checkbox" name="brand" value="razer" /> Razer</label>
+                                <label><input type="checkbox" name="brand" value="corsair" /> Corsair</label>
+                                <label><input type="checkbox" name="brand" value="asus" /> ASUS</label>
+                            </div>
+                        </details>
+                        <details class="category-filter-group">
+                            <summary>Tương thích</summary>
+                            <div class="category-filter-options">
+                                <label><input type="checkbox" name="compatibility" value="all" checked /> Tất cả</label>
+                                <label><input type="checkbox" name="compatibility" value="pc" /> Máy tính bàn</label>
+                                <label><input type="checkbox" name="compatibility" value="laptop" /> Laptop</label>
+                                <label><input type="checkbox" name="compatibility" value="console" /> Máy chơi game</label>
+                            </div>
+                        </details>
+                    }
+                </div>
+            </details>
+
+            <section class="category-results" aria-label="Danh sách sản phẩm @categoryName">
+                <div class="category-results-toolbar">
+                    <div class="category-result-count">
+                        <strong>Danh sách sản phẩm</strong>
+                        <span>@products.Count sản phẩm</span>
+                    </div>
+                    <label class="category-sort">
+                        <span>Sắp xếp</span>
+                        <select name="sort" aria-label="Sắp xếp sản phẩm">
+                            <option value="newest">Mới nhất</option>
+                            <option value="price-low">Giá tăng dần</option>
+                            <option value="price-high">Giá giảm dần</option>
+                            <option value="name">Tên A-Z</option>
+                        </select>
+                    </label>
+                </div>
+
+                <!-- Danh sách hiển thị dữ liệu đã nhập từ trang quản trị, không tự tạo sản phẩm mẫu. -->
+                <div class="category-product-grid">
+                    @if (products.Count == 0)
+                    {
+                        <div class="category-empty-state">
+                            <span class="category-empty-symbol" aria-hidden="true">GH</span>
+                            <h2>Chưa có sản phẩm @categoryName</h2>
+                            <p>Sản phẩm sẽ xuất hiện ở đây sau khi được thêm từ trang quản trị.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        foreach (var product in products)
+                        {
+                            <a class="catalog-product-link" href="@Url.Action("Detail", "Product", new { id = product.Id })">
+                            <article class="catalog-product-card">
+                                <div class="catalog-product-image">
+                                    <img src="@Url.Content(product.ImagePath)" alt="@product.Name" />
+                                </div>
+                                <div class="catalog-product-info">
+                                    <span class="catalog-product-category">@product.CategoryName</span>
+                                    <h2>@product.Name</h2>
+                                    <p class="catalog-product-description">@product.Description</p>
+                                    <div class="catalog-product-specs">@product.Specifications</div>
+                                    <strong class="catalog-product-price">@product.Price.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))đ</strong>
+                                </div>
+                            </article>
+                            </a>
+                        }
+                    }
+                </div>
+            </section>
+        </div>
+    </div>
+</main>

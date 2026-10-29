@@ -1,0 +1,10 @@
+.vs/
+**/bin/
+**/obj/
+packages/
+*.user
+*.suo
+
+# Bo qua cac file cai dat, khong phai anh san pham
+/GearHub/wwwroot/images/products/GitHubDesktopSetup-x64.exe
+/GearHub/wwwroot/images/products/Git-2.56.0.4-64-bit.exe

@@ -1,0 +1,51 @@
+@{
+    ViewBag.Title = "Lịch sử mua hàng";
+}
+
+<main class="order-page">
+    <div class="site-container">
+        <nav class="category-breadcrumb" aria-label="Đường dẫn trang">
+            <a href="@Url.Action("Index", "Home")">Trang chủ</a>
+            <span aria-hidden="true">/</span>
+            <a href="@Url.Action("Login", "Account")">Tài khoản</a>
+            <span aria-hidden="true">/</span>
+            <span aria-current="page">Lịch sử mua hàng</span>
+        </nav>
+
+        <header class="order-page-heading">
+            <p class="account-kicker">GEARHUB / TÀI KHOẢN</p>
+            <h1>Lịch sử mua hàng</h1>
+            <p>Xem lại tình trạng và thông tin các đơn hàng của bạn.</p>
+        </header>
+
+        <nav class="account-order-nav" aria-label="Khu vực tài khoản">
+            <a href="@Url.Action("Login", "Account")">Tài khoản</a>
+            <a class="is-current" href="@Url.Action("OrderHistory", "Account")">Lịch sử mua hàng</a>
+        </nav>
+
+        <div class="order-demo-note">
+            Đây là khung minh họa. Lịch sử đơn hàng thật sẽ hiện khi hệ thống được nối với dữ liệu mua hàng.
+        </div>
+
+        <section class="order-history-card" aria-label="Đơn hàng minh họa">
+            <div class="order-history-top">
+                <div>
+                    <span class="order-label">Mã đơn hàng</span>
+                    <strong>GH-DEMO-001</strong>
+                </div>
+                <span class="order-status order-status-demo">Đơn minh họa</span>
+            </div>
+
+            <div class="order-history-info">
+                <span>Ngày đặt: Chưa có dữ liệu</span>
+                <span>Thanh toán: Chưa chọn</span>
+                <strong>Tổng tiền: —</strong>
+            </div>
+
+            <div class="order-history-bottom">
+                <p>Thông tin sản phẩm và trạng thái đơn sẽ được hiển thị ở đây.</p>
+                <a class="button button-outline" href="@Url.Action("OrderDetail", "Account", new { id = "GH-DEMO-001" })">Xem chi tiết</a>
+            </div>
+        </section>
+    </div>
+</main>

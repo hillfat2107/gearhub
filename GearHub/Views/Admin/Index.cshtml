@@ -1,0 +1,60 @@
+@model System.Collections.Generic.IList<GearHub.Models.Entities.AdminProduct>
+@{
+    ViewBag.Title = "Quản lý sản phẩm";
+}
+
+<main class="admin-page">
+    <div class="admin-shell">
+        <header class="admin-page-heading">
+            <div>
+                <p class="eyebrow">GEARHUB / QUẢN TRỊ</p>
+                <h1>Sản phẩm đã thêm</h1>
+                <p class="admin-muted">Danh sách này cũng được dùng ở trang chủ và trang danh mục.</p>
+            </div>
+            <div class="admin-heading-actions">
+                <a class="button button-primary" href="@Url.Action("Create", "Admin")">Thêm sản phẩm</a>
+                <a class="admin-text-link" href="@Url.Action("Logout", "Admin")">Đăng xuất</a>
+            </div>
+        </header>
+
+        @if (!string.IsNullOrEmpty(TempData["SuccessMessage"] as string))
+        {
+            <div class="admin-message admin-message-success">@TempData["SuccessMessage"]</div>
+        }
+
+        <!-- Mỗi dòng bên dưới lấy trực tiếp tên, giá và ảnh từ danh sách đã lưu. -->
+        @if (Model == null || Model.Count == 0)
+        {
+            <section class="admin-empty-state">
+                <h2>Chưa có sản phẩm nào</h2>
+                <p>Hãy thêm sản phẩm đầu tiên bằng nút ở phía trên.</p>
+            </section>
+        }
+        else
+        {
+            <div class="admin-product-list">
+                @foreach (var product in Model)
+                {
+                    <article class="admin-product-row">
+                        <img src="@Url.Content(product.ImagePath)" alt="@product.Name" />
+                        <div class="admin-product-details">
+                            <span class="admin-product-category">@product.CategoryName</span>
+                            <h2>@product.Name</h2>
+                            <p>@product.Description</p>
+                            <strong>@product.Price.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))đ</strong>
+                        </div>
+                        <div class="admin-product-actions">
+                            <a class="button button-outline" href="@Url.Action("Edit", "Admin", new { id = product.Id })">Sửa</a>
+                            @using (Html.BeginForm("Delete", "Admin", FormMethod.Post, new { onsubmit = "return confirm('Bạn có chắc muốn xóa sản phẩm này?');" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.Hidden("id", product.Id)
+                                <button class="button button-danger" type="submit">Xóa</button>
+                            }
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+    </div>
+</main>

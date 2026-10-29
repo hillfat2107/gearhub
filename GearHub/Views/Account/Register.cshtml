@@ -1,0 +1,44 @@
+@{
+    ViewBag.Title = "Tài khoản dùng thử";
+}
+
+<main class="account-page">
+    <div class="site-container">
+        <nav class="category-breadcrumb" aria-label="Đường dẫn trang">
+            <a href="@Url.Action("Index", "Home")">Trang chủ</a>
+            <span aria-hidden="true">/</span>
+            <a href="@Url.Action("Login", "Account")">Tài khoản</a>
+            <span aria-hidden="true">/</span>
+            <span aria-current="page">Tài khoản dùng thử</span>
+        </nav>
+
+        <div class="account-card account-card-register">
+            <section class="account-welcome">
+                <p class="account-kicker">GEARHUB / TÀI KHOẢN</p>
+                <h1>Tài khoản GearHub sẵn sàng sử dụng</h1>
+                <p>Đây là tài khoản mẫu để bạn đăng nhập và xem thử các trang tài khoản.</p>
+                <span class="account-mark" aria-hidden="true">GH</span>
+            </section>
+
+            <section class="account-form-panel">
+                <p class="account-form-label">Không cần email hoặc số điện thoại</p>
+                <h2>Tài khoản dùng thử</h2>
+                <p class="account-form-note">Dùng hai thông tin bên dưới để đăng nhập vào GearHub.</p>
+
+                <div class="account-demo-credentials">
+                    <div>
+                        <span>Tên đăng nhập</span>
+                        <strong>admin</strong>
+                    </div>
+                    <div>
+                        <span>Mật khẩu</span>
+                        <strong>admin</strong>
+                    </div>
+                </div>
+
+                <a class="button button-primary account-submit" href="@Url.Action("Login", "Account")">Đăng nhập tài khoản mẫu</a>
+                <p class="account-switch"><a href="@Url.Action("Index", "Home")">Quay lại trang chủ</a></p>
+            </section>
+        </div>
+    </div>
+</main>

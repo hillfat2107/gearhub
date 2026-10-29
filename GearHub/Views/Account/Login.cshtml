@@ -1,0 +1,55 @@
+@{
+    ViewBag.Title = "Đăng nhập";
+}
+
+<main class="account-page">
+    <div class="site-container">
+        <nav class="category-breadcrumb" aria-label="Đường dẫn trang">
+            <a href="@Url.Action("Index", "Home")">Trang chủ</a>
+            <span aria-hidden="true">/</span>
+            <span aria-current="page">Tài khoản</span>
+        </nav>
+
+        <div class="account-card">
+            <section class="account-welcome">
+                <p class="account-kicker">GEARHUB / TÀI KHOẢN</p>
+                <h1>Chào mừng trở lại</h1>
+                <p>Đăng nhập để theo dõi những nội dung dành riêng cho bạn.</p>
+                <span class="account-mark" aria-hidden="true">GH</span>
+            </section>
+
+            <section class="account-form-panel">
+                <p class="account-form-label">Tài khoản của bạn</p>
+                <h2>Đăng nhập</h2>
+                <p class="account-form-note">Tài khoản mẫu không cần email hay số điện thoại.</p>
+
+                @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage as string))
+                {
+                    <p class="account-login-error" role="alert">@ViewBag.ErrorMessage</p>
+                }
+
+                @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "account-form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <label>
+                        Tên đăng nhập
+                        <input type="text" name="username" placeholder="Nhập tên đăng nhập" autocomplete="username" required />
+                    </label>
+                    <label>
+                        Mật khẩu
+                        <input type="password" name="password" placeholder="Nhập mật khẩu" autocomplete="current-password" required />
+                    </label>
+                    <label class="account-remember">
+                        <input type="checkbox" name="remember" />
+                        <span>Ghi nhớ đăng nhập</span>
+                    </label>
+                    <p class="account-recovery-link"><a href="@Url.Action("ForgotPassword", "Account")">Quên mật khẩu?</a></p>
+                    <button class="button button-primary account-submit" type="submit">Đăng nhập</button>
+                }
+
+                <p class="account-switch">Chưa có tài khoản? <a href="@Url.Action("Register", "Account")">Xem tài khoản mẫu</a></p>
+                <p class="account-switch"><a href="@Url.Action("OrderHistory", "Account")">Lịch sử mua hàng</a></p>
+            </section>
+        </div>
+    </div>
+</main>

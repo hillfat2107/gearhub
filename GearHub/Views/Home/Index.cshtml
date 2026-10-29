@@ -1,0 +1,286 @@
+@{
+    ViewBag.Title = "Thiết bị công nghệ";
+    var featuredProducts = ViewBag.FeaturedProducts as System.Collections.Generic.List<GearHub.Models.Entities.AdminProduct> ?? new System.Collections.Generic.List<GearHub.Models.Entities.AdminProduct>();
+    var bannerImage = featuredProducts.Count > 0 ? featuredProducts[0].ImagePath : "~/wwwroot/images/products/chuot_gaming.webp";
+}
+
+<main class="home-page">
+    <!-- Banner lớn có thể đổi qua lại giữa các nội dung của GearHub. -->
+    <section class="hero-carousel" data-gearhub-carousel aria-label="Banner nổi bật GearHub">
+        <div class="hero-carousel-viewport">
+            <article class="hero-slide hero-slide-pc is-active" data-hero-slide aria-hidden="false">
+                <div class="site-container hero-slide-layout">
+                    <div class="hero-slide-copy">
+                        <p class="eyebrow">GEARHUB / TECH FOR PLAY</p>
+                        <h1>Nâng cấp góc máy.<br /><span>Chiến game đã hơn.</span></h1>
+                        <p class="hero-description">Tìm dàn máy phù hợp cho góc chơi, từ lần nâng cấp đầu tiên đến cấu hình chiến game mạnh mẽ.</p>
+                        <div class="hero-promo-label">GEARHUB PERFORMANCE <span>PC GAMING</span></div>
+                        <div class="hero-actions">
+                            <a class="button button-primary" href="@Url.Action("Category", "Product", new { category = "pc-gaming" })">Khám phá PC Gaming <span aria-hidden="true">↗</span></a>
+                            <a class="button button-outline" href="@Url.Action("Index", "BuildPC")">Tự build PC</a>
+                        </div>
+                    </div>
+                    <div class="hero-slide-art hero-slide-art-pc">
+                        <span class="hero-art-orbit" aria-hidden="true"></span>
+                        <img src="@Url.Content(bannerImage)" alt="Máy tính Gaming nổi bật tại GearHub" />
+                        <span class="hero-art-tag">GEARHUB<br /><strong>01 / PERFORMANCE</strong></span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="hero-slide hero-slide-build" data-hero-slide aria-hidden="true">
+                <div class="site-container hero-slide-layout">
+                    <div class="hero-slide-copy">
+                        <p class="eyebrow">GH / YOUR SETUP</p>
+                        <h1>Góc máy của bạn,<br /><span>mọi thứ bắt đầu từ đây.</span></h1>
+                        <p class="hero-description">Chọn linh kiện theo nhu cầu và ngân sách, rồi ghép thành bộ máy mang dấu ấn riêng.</p>
+                        <div class="hero-promo-label">TỰ CHỌN CẤU HÌNH <span>GH BUILD</span></div>
+                        <div class="hero-actions">
+                            <a class="button button-primary" href="@Url.Action("Index", "BuildPC")">Bắt đầu Build PC <span aria-hidden="true">↗</span></a>
+                            <a class="button button-outline" href="@Url.Action("Category", "Product", new { category = "pc-linh-kien" })">Xem linh kiện</a>
+                        </div>
+                    </div>
+                    <div class="hero-slide-art hero-slide-art-build" aria-hidden="true">
+                        <div class="hero-build-grid"></div>
+                        <div class="hero-build-chip">GH</div>
+                        <div class="hero-build-part hero-build-cpu"><span>CPU</span><strong>POWER</strong></div>
+                        <div class="hero-build-part hero-build-gpu"><span>GPU</span><strong>GRAPHICS</strong></div>
+                        <div class="hero-build-part hero-build-ram"><span>RAM</span><strong>MEMORY</strong></div>
+                        <span class="hero-art-tag">BUILD YOUR<br /><strong>OWN SYSTEM</strong></span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="hero-slide hero-slide-gear" data-hero-slide aria-hidden="true">
+                <div class="site-container hero-slide-layout">
+                    <div class="hero-slide-copy">
+                        <p class="eyebrow">GEARHUB / GAMING GEAR</p>
+                        <h1>Sẵn sàng vào trận?<br /><span>Chọn gear đúng gu.</span></h1>
+                        <p class="hero-description">Hoàn thiện góc chơi với chuột, bàn phím và phụ kiện hợp với cách bạn chơi.</p>
+                        <div class="hero-promo-label">GEAR UP. PLAY ON. <span>GAMING GEAR</span></div>
+                        <div class="hero-actions">
+                            <a class="button button-primary" href="@Url.Action("Category", "Product", new { category = "gaming-gear" })">Khám phá Gaming gear <span aria-hidden="true">↗</span></a>
+                            <a class="button button-outline" href="@Url.Action("Category", "Product", new { category = "phu-kien" })">Xem phụ kiện</a>
+                        </div>
+                    </div>
+                    <div class="hero-slide-art hero-slide-art-gear" aria-hidden="true">
+                        <div class="hero-gear-screen"><span>GEARHUB / PLAY</span><strong>PLAY<br />YOUR<br /><i>WAY.</i></strong><b>GH</b></div>
+                        <div class="hero-gear-stand"></div>
+                        <div class="hero-gear-keyboard"></div>
+                        <span class="hero-art-tag">02 / GEAR<br /><strong>READY TO PLAY</strong></span>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <button class="hero-carousel-arrow hero-carousel-previous" type="button" data-hero-previous aria-label="Banner trước">&#8249;</button>
+        <button class="hero-carousel-arrow hero-carousel-next" type="button" data-hero-next aria-label="Banner tiếp theo">&#8250;</button>
+        <div class="hero-carousel-dots" role="group" aria-label="Chọn banner">
+            <button class="is-active" type="button" data-hero-dot="0" aria-label="Banner 1" aria-pressed="true"></button>
+            <button type="button" data-hero-dot="1" aria-label="Banner 2" aria-pressed="false"></button>
+            <button type="button" data-hero-dot="2" aria-label="Banner 3" aria-pressed="false"></button>
+        </div>
+    </section>
+
+    <!-- Mỗi article là một ô danh mục; sửa tên và mô tả theo danh sách nhóm chọn. -->
+    <section class="section-block category-section" id="danh-muc">
+        <div class="site-container">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">TÌM THEO NHU CẦU</p>
+                    <h2>Khám phá danh mục</h2>
+                </div>
+                <span class="section-aside">Chọn một khu vực để bắt đầu</span>
+            </div>
+
+            <div class="category-grid">
+                <a class="category-card" href="@Url.Action("Category", "Product")">
+                    <span class="category-symbol category-symbol-case" aria-hidden="true">
+                        <svg viewBox="0 0 32 32" focusable="false">
+                            <rect x="7.5" y="2.5" width="17" height="27" rx="2" />
+                            <circle class="case-fan" cx="16" cy="9" r="2.6" />
+                            <circle class="case-fan" cx="16" cy="16" r="2.6" />
+                            <circle class="case-fan" cx="16" cy="23" r="2.6" />
+                        </svg>
+                    </span>
+                    <h3>PC Gaming</h3>
+                    <p>Khu vực dành cho dàn máy chơi game.</p>
+                    <span class="category-arrow" aria-hidden="true">↗</span>
+                </a>
+                <a class="category-card" href="@Url.Action("Category", "Product", new { category = "laptop" })">
+                    <span class="category-symbol" aria-hidden="true">
+                        <svg viewBox="0 0 32 32" focusable="false">
+                            <rect x="5" y="4" width="22" height="18" rx="2" />
+                            <path d="M3 26h26l-2-4H5z" />
+                            <path class="icon-accent" d="M9 8h14" />
+                        </svg>
+                    </span>
+                    <h3>Laptop</h3>
+                    <p>Không gian cho máy tính xách tay.</p>
+                    <span class="category-arrow" aria-hidden="true">↗</span>
+                </a>
+                <a class="category-card" href="@Url.Action("Category", "Product", new { category = "linh-kien" })">
+                    <span class="category-symbol" aria-hidden="true">
+                        <svg viewBox="0 0 32 32" focusable="false">
+                            <rect x="3" y="8" width="24" height="16" rx="2" />
+                            <circle class="icon-accent" cx="11" cy="16" r="4" />
+                            <circle class="icon-accent" cx="21" cy="16" r="4" />
+                            <path d="M27 12h2v8h-2M7 24v3h14v-3" />
+                        </svg>
+                    </span>
+                    <h3>Linh kiện</h3>
+                    <p>Các thành phần cho bộ máy của bạn.</p>
+                    <span class="category-arrow" aria-hidden="true">↗</span>
+                </a>
+                <a class="category-card" href="@Url.Action("Category", "Product", new { category = "man-hinh" })">
+                    <span class="category-symbol" aria-hidden="true">
+                        <svg viewBox="0 0 32 32" focusable="false">
+                            <rect x="3" y="4" width="26" height="18" rx="2" />
+                            <path class="icon-accent" d="M7 8h18" />
+                            <path d="M16 22v5M11 28h10" />
+                        </svg>
+                    </span>
+                    <h3>Màn hình</h3>
+                    <p>Khu vực hiển thị và phụ kiện hình ảnh.</p>
+                    <span class="category-arrow" aria-hidden="true">↗</span>
+                </a>
+                <a class="category-card" href="@Url.Action("Category", "Product", new { category = "gaming-gear" })">
+                    <span class="category-symbol" aria-hidden="true">
+                        <svg viewBox="0 0 32 32" focusable="false">
+                            <path d="M16 3C9 3 6 8 6 15v5c0 6 4 9 10 9s10-3 10-9v-5c0-7-3-12-10-12z" />
+                            <path d="M16 3v10M10 8h12" />
+                            <path class="icon-accent" d="M16 7v3" />
+                        </svg>
+                    </span>
+                    <h3>Gaming gear</h3>
+                    <p>Góc dành cho thiết bị chơi game.</p>
+                    <span class="category-arrow" aria-hidden="true">↗</span>
+                </a>
+                <a class="category-card" href="@Url.Action("Category", "Product", new { category = "phu-kien" })">
+                    <span class="category-symbol" aria-hidden="true">
+                        <svg viewBox="0 0 32 32" focusable="false">
+                            <rect x="19" y="3" width="11" height="10" rx="1.5" />
+                            <path d="M19 8h-6l-3 6 6 5 5-3M16 19v7M11 27h11M13 26v3h7v-3" />
+                            <circle class="icon-accent" cx="13" cy="14" r="1.2" />
+                        </svg>
+                    </span>
+                    <h3>Phụ kiện</h3>
+                    <p>Những món đồ hoàn thiện góc máy.</p>
+                    <span class="category-arrow" aria-hidden="true">↗</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Khi nhóm thêm dữ liệu, đặt từng thẻ sản phẩm vào lưới này để chúng tự căn hàng. -->
+    <section class="section-block product-section" id="san-pham">
+        <div class="site-container">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">GEARHUB SELECTION</p>
+                    <h2>Sản phẩm nổi bật</h2>
+                </div>
+                <span class="section-aside">Thiết bị cho góc máy của bạn</span>
+            </div>
+            <div class="product-grid" id="product-list">
+                @if (featuredProducts.Count > 0)
+                {
+                    foreach (var product in featuredProducts)
+                    {
+                        <a class="featured-product-link" href="@Url.Action("Detail", "Product", new { id = product.Id })">
+                        <article class="product-card">
+                            <img class="product-image" src="@Url.Content(product.ImagePath)" width="150" height="140" alt="@product.Name" />
+                            <p class="product-brand">@product.CategoryName</p>
+                            <h3>@product.Name</h3>
+                            <p>@product.Description</p>
+                            <strong>@product.Price.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))đ</strong>
+                        </article>
+                        </a>
+                    }
+                }
+                else
+                {
+                    <article class="product-card">
+                        <!-- Giữ một thẻ minh họa cho đến khi quản trị viên thêm sản phẩm thật. -->
+                        <img class="product-image" src="@Url.Content("~/wwwroot/images/products/chuot_gaming.webp")"
+                             width="150" height="140" alt="Chuột gaming" />
+                        <p class="product-brand">Tên thương hiệu</p>
+                        <h3>Chuột Gaming của bạn</h3>
+                        <p>Thông số ngắn, ví dụ: kết nối không dây</p>
+                        <strong>1.090.000</strong>
+                    </article>
+                }
+            </div>
+        </div>
+    </section>
+
+    <!-- Banner giới thiệu Build PC; nút dẫn tới công cụ có thể thêm khi trang cấu hình sẵn sàng. -->
+    <section class="site-container builder-wrap" id="build-pc">
+        <div class="builder-panel">
+            <div class="builder-copy">
+                <p class="eyebrow">YOUR SETUP, YOUR RULES</p>
+                <h2>Tạo nên góc máy<br /><span>mang dấu ấn của bạn.</span></h2>
+                <p>Khu vực Build PC sẽ giúp bạn hình dung và lựa chọn cấu hình phù hợp.</p>
+                <a class="button button-primary" href="@Url.Action("Index", "BuildPC")">Bắt đầu cấu hình</a>
+            </div>
+            <div class="builder-mark" aria-hidden="true">
+                <span class="builder-mark-ring"></span>
+                <span class="builder-mark-core">GH<span> / BUILD</span></span>
+                <span class="builder-mark-line"></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Phần mở đầu của GearTek; có thể đặt danh sách bài viết bên dưới. -->
+    <section class="section-block news-section" id="tin-cong-nghe">
+        <div class="site-container news-placeholder">
+            <div>
+                <p class="eyebrow">GEARTEK / GÓC CÔNG NGHỆ</p>
+                <h2>Kiến thức và xu hướng công nghệ.</h2>
+            </div>
+            <span class="news-placeholder-mark" aria-hidden="true">GH<span> / 02</span></span>
+        </div>
+    </section>
+</main>
+
+@section scripts {
+    <script>
+        (function () {
+            var carousel = document.querySelector("[data-gearhub-carousel]");
+            if (!carousel) return;
+
+            var slides = Array.prototype.slice.call(carousel.querySelectorAll("[data-hero-slide]"));
+            var dots = Array.prototype.slice.call(carousel.querySelectorAll("[data-hero-dot]"));
+            var currentIndex = 0;
+
+            var showSlide = function (index) {
+                currentIndex = (index + slides.length) % slides.length;
+                slides.forEach(function (slide, slideIndex) {
+                    var isActive = slideIndex === currentIndex;
+                    slide.classList.toggle("is-active", isActive);
+                    slide.setAttribute("aria-hidden", isActive ? "false" : "true");
+                    dots[slideIndex].classList.toggle("is-active", isActive);
+                    dots[slideIndex].setAttribute("aria-pressed", isActive ? "true" : "false");
+                });
+            };
+
+            carousel.querySelector("[data-hero-previous]").addEventListener("click", function () {
+                showSlide(currentIndex - 1);
+            });
+            carousel.querySelector("[data-hero-next]").addEventListener("click", function () {
+                showSlide(currentIndex + 1);
+            });
+            dots.forEach(function (dot, index) {
+                dot.addEventListener("click", function () {
+                    showSlide(index);
+                });
+            });
+
+            window.setInterval(function () {
+                if (!carousel.matches(":hover") && !carousel.contains(document.activeElement)) {
+                    showSlide(currentIndex + 1);
+                }
+            }, 6500);
+        })();
+    </script>
+}

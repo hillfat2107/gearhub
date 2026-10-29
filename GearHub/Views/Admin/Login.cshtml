@@ -1,0 +1,30 @@
+@{
+    ViewBag.Title = "Đăng nhập quản trị";
+}
+
+<main class="admin-page">
+    <section class="admin-login-card">
+        <p class="eyebrow">GEARHUB / QUẢN TRỊ</p>
+        <h1>Đăng nhập quản trị</h1>
+        <p class="admin-muted">Đăng nhập để thêm sản phẩm vào danh mục GearHub.</p>
+
+        @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage as string))
+        {
+            <div class="admin-message admin-message-error">@ViewBag.ErrorMessage</div>
+        }
+
+        <!-- Biểu mẫu này gửi tài khoản và mật khẩu tới phần kiểm tra đăng nhập của quản trị viên. -->
+        @using (Html.BeginForm("Login", "Admin", FormMethod.Post, new { @class = "admin-form" }))
+        {
+            @Html.AntiForgeryToken()
+            <label for="username">Tài khoản</label>
+            <input id="username" name="username" type="text" autocomplete="username" required />
+
+            <label for="password">Mật khẩu</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required />
+
+            <button class="button button-primary" type="submit">Đăng nhập</button>
+            <p class="admin-login-hint">Tài khoản và mật khẩu hiện dùng cho bài tập: admin</p>
+        }
+    </section>
+</main>

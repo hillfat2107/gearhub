@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <!-- Khai báo bộ ký tự tiếng Việt và cách trang co giãn theo màn hình. -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#d71920" />
+    <title>@ViewBag.Title - GearHub</title>
+
+    <!-- CSS và Modernizr được nạp từ các bundle đã đăng ký trong App_Start/BundleConfig.cs. -->
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <!-- Header và footer dùng chung, nhờ vậy các trang khác giữ được cùng một bộ khung. -->
+    @Html.Partial("_Header")
+
+    <!-- Nội dung của từng view sẽ được Razor đặt vào khu vực này. -->
+    <div class="body-content">
+        @RenderBody()
+    </div>
+
+    @Html.Partial("_Footer")
+
+    <!-- Bootstrap cần cho menu thu gọn trên điện thoại; đặt script cuối trang để nội dung hiện trước. -->
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    <!-- Trang nào cần JavaScript riêng có thể khai báo section scripts trong view đó. -->
+    @RenderSection("scripts", required: false)
+</body>
+</html>
